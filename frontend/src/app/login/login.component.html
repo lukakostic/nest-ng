@@ -1,0 +1,7 @@
+
+<form (submit)="onLogin()">
+  <input type="text" [(ngModel)]="username" name="username" placeholder="Username">
+  <input type="password" [(ngModel)]="password" name="password" placeholder="Password">
+  <button type="submit">Login</button>
+</form>
+<p *ngIf="loggedIn">Logged in as: {{ username }}</p>

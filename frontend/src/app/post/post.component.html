@@ -1,0 +1,28 @@
+
+<div class="card mb-3">
+    <div class="card-header d-flex justify-content-between">
+      <h5>{{ post.title }}</h5>
+      <div>
+        <button class="btn btn-link p-0" (click)="onUpvote()">👍 {{ votes }}</button>
+        <button class="btn btn-link p-0" (click)="onDownvote()">👎</button>
+      </div>
+    </div>
+    <div *ngIf="post.images.length" id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
+      <div class="carousel-inner">
+        <div *ngFor="let image of post.images; let isFirst = first" class="carousel-item" [ngClass]="{'active': isFirst}">
+          <img [src]="image" class="d-block w-100" alt="...">
+        </div>
+      </div>
+      <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+      </button>
+    </div>
+    <div class="card-body">
+      <p class="card-text">{{ post.text }}</p>
+    </div>
+  </div>

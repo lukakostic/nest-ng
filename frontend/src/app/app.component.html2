@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reddit Clone</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Reddit Clone</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="#">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">New</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Top</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-8">
+
+              <app-login></app-login>
+              <app-register></app-register>
+              
+                <!-- Post Section -->
+                <div class="post">
+                    <div class="votes">
+                        <button class="btn btn-light">^</button>
+                        <span>100</span>
+                        <button class="btn btn-light">v</button>
+                    </div>
+                    <div class="content">
+                        <h3>Post Title</h3>
+                        <p>Post content...</p>
+                    </div>
+                </div>
+                <!-- ... add more posts -->
+            </div>
+            <div class="col-md-4">
+                <!-- Sidebar Section -->
+                <div class="sidebar">
+                    <h3>Subreddits</h3>
+                    <ul>
+                        <li><a href="#">Subreddit 1</a></li>
+                        <li><a href="#">Subreddit 2</a></li>
+                        <li><a href="#">Subreddit 3</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
