@@ -2,7 +2,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { tap } from 'rxjs/operators';
-import { UserRegData } from './register/register.component';
+import { UserRegData } from './page-login/register/register.component';
 
 @Injectable({
   providedIn: 'root',

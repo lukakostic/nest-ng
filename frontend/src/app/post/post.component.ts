@@ -14,6 +14,7 @@ export class PostComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
+    console.log("POST",this.post);
   }
 
   onUpvote() {

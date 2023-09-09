@@ -1,0 +1,24 @@
+<div class="container mt-3">
+    <form [formGroup]="postForm" (ngSubmit)="onSubmit()">
+      <div class="mb-3">
+        <label for="title" class="form-label">Title</label>
+        <input type="text" class="form-control" id="title" formControlName="title" required>
+      </div>
+      <div class="mb-3">
+        <label for="text" class="form-label">Text</label>
+        <textarea class="form-control" id="text" rows="3" formControlName="text" required></textarea>
+      </div>
+      <div class="mb-3">
+        <label for="image" class="form-label">Image</label>
+        <div class="input-group">
+          <input type="url" class="form-control" id="image" formControlName="image" placeholder="https://example.com">
+          <button class="btn btn-outline-secondary" type="button" (click)="onAddImage()">Add</button>
+        </div>
+        <div *ngFor="let image of images; let i = index" class="mt-2 d-flex justify-content-between align-items-center">
+          <a [href]="image" target="_blank">{{ image }}</a>
+          <button class="btn btn-danger btn-sm" type="button" (click)="onRemoveImage(i)">Remove</button>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary" [disabled]="postForm.invalid">Submit</button>
+    </form>
+  </div>

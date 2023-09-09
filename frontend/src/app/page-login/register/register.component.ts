@@ -1,5 +1,5 @@
 import { Component, OnInit, OnChanges, Input } from '@angular/core';
-import { AuthService } from '../auth.service';
+import { AuthService } from '../../auth.service';
 
 
 export type UserRegData ={

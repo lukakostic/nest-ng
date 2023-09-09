@@ -8,11 +8,11 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - DATABASE_HOST=db
+      - DATABASE_HOST=localhost
       - DATABASE_PORT=5434
       - DATABASE_USER=luka
       - DATABASE_PASSWORD=password
-      - DATABASE_NAME=mydatabase
+      - DATABASE_NAME=db2
     depends_on:
       - db
     volumes:
@@ -23,7 +23,7 @@ services:
   db:
     image: postgres:13
     environment:
-      POSTGRES_DB: mydatabase
+      POSTGRES_DB: db2
       POSTGRES_USER: luka
       POSTGRES_PASSWORD: password
     ports:

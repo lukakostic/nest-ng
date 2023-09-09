@@ -8,8 +8,8 @@ import { UsersModule } from './users/users.module';
   imports: [
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'db',//'localhost',, // This is the name of the PostgreSQL service defined in docker-compose.yml
-      port: 5434,
+      host: 'localhost',
+      port: 5432,
       username: 'luka',
       password: 'password',
       database: 'mydatabase',
