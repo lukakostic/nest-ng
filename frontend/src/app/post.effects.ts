@@ -6,16 +6,29 @@ import { HttpClient } from '@angular/common/http';
 import * as PostActions from './post.actions';
 import { Post } from './post.model';
 
+
+@Injectable({
+  providedIn: 'root',
+})
+export class PostService {
+    constructor(
+      private http: HttpClient
+    ) {}
+    getPosts(){return this.http.get<Post[]>('http://localhost:3000/posts')}
+}
+
+
 @Injectable()
 export class PostEffects {
 
   constructor(
     private actions$: Actions,
+    private postService: PostService,
     private http: HttpClient
   ) {}
   loadPosts$ = createEffect(() => this.actions$.pipe(
     ofType(PostActions.loadPosts),
-    exhaustMap(() => this.http.get<Post[]>('http://localhost:3000/posts')
+    exhaustMap(() => this.postService.getPosts()
       .pipe(
         map(posts => {
             console.log("ALOOOOOOOO",posts);
