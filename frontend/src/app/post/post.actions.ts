@@ -3,11 +3,12 @@ import { Post } from './post.model';
 
 
 export const createPosts = createAction(
-    '[Post] Create Post'
+    '[Post] Create Post',
+    props<{ post: Partial<Post> }>()
   );
 export const createPostsS = createAction(
     '[Post] Create Post Success',
-    props<{ posts: Post[] }>()
+    props<{ post: Post }>()
 );
 export const createPostsE = createAction(
     '[Post] Create Post Error',

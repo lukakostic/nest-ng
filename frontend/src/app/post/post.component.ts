@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Post } from '../post.model';
+import { Post } from '../post/post.model';
 
 @Component({
   selector: 'app-post',
@@ -9,6 +9,7 @@ import { Post } from '../post.model';
 export class PostComponent implements OnInit {
 
   @Input() post: Post;
+  @Input() index: number = -1;
   votes: number = 0;
 
   constructor() { }

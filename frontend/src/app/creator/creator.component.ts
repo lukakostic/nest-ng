@@ -1,7 +1,13 @@
 
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Post } from '../post.model';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
+import { Post } from '../post/post.model';
+import { PostService } from '../post/post.effects';
+import * as PostActions from '../post/post.actions';
+import { Store } from '@ngrx/store';
+import { State } from '../post/post.reducer';
+import { map } from 'rxjs';
 
 @Component({
   selector: 'app-creator',
@@ -13,8 +19,19 @@ export class CreatorComponent implements OnInit {
   postForm: FormGroup;
   images: string[] = [];
   @Output() postCreated = new EventEmitter<Post>();
+  /* From a parent component you would listen like so:
+  <app-creator (postCreated)="onPostCreated($event)"></app-creator>
+  onPostCreated(post: Post) {
+    console.log(post);
+  }
+  */
 
-  constructor(private fb: FormBuilder) { }
+  constructor(
+    private fb: FormBuilder,
+    private actions$: Actions,
+    private postService: PostService,
+    private store: Store<State>
+  ) { }
 
   ngOnInit(): void {
     this.postForm = this.fb.group({
@@ -43,6 +60,23 @@ export class CreatorComponent implements OnInit {
     this.postCreated.emit(post);
     this.postForm.reset();
     this.images = [];
+    let postObj = {
+      title: title,
+      text: text,
+      images: this.images
+    }
+
+    this.store.dispatch(PostActions.createPosts({post: postObj}));
+  }
+
+  onAddedPost(){
+    this.actions$.pipe(
+      ofType(PostActions.createPostsS),
+      map(action => { 
+        console.log("Uploaded post",action.post);
+        return action.post
+      })
+    )
   }
 
 }

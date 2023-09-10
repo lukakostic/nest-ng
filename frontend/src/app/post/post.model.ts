@@ -1,7 +1,7 @@
 export class Post {
     constructor(
         public id: string,
-        public userId: string,
+        public user: string,
         
         public title: string, 
         public text: string, 

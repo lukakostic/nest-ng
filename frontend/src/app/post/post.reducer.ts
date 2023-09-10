@@ -6,18 +6,19 @@ export const postFeatureKey = 'post';
 
 export interface State {
   posts: Post[];
+  uploadedPost: Post | null;
   error: any;
 }
 
 export const initialState: State = {
   posts: [],
+  uploadedPost: null,
   error: null
 };
 
 export const postReducer = createReducer(
   initialState,
   on(PostActions.loadPostsS, (state, action) => {
-    console.log("ALOOOOOOOO");
     console.log("SZ",JSON.stringify(state));
     console.log("ZX",JSON.stringify(action.posts))
     return {
@@ -29,5 +30,12 @@ export const postReducer = createReducer(
     ...state,
     posts: [],
     error: action.error
-  }))
+  })),
+
+  on(PostActions.createPostsS, (state, action) => ({
+    ...state,
+    uploadedPost: action.post,
+    error: null
+  })),
+  
 );

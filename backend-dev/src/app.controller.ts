@@ -1,32 +1,50 @@
-import { Controller, Get } from '@nestjs/common';
-import { Post } from './entities/post.entity';
-import { User } from './entities/user.entity';
+import { Controller, Get, Post, Body } from '@nestjs/common';
+import { PostM } from './_entities/post.entity';
+import { User } from './_entities/user.entity';
+import { Upvote } from './_entities/upvote.entity';
+import {CommentM} from './_entities/comment.entity';
+//import { InjectRepository } from '@nestjs/typeorm';
+//import { Repository } from 'typeorm';
+import { UserServices } from './users/users.services';
+import { PostServices } from './posts/posts.services';
+import { VoteServices } from './votes/votes.services';
+import { CommentServices } from './comments/comments.services';
+import { UserController } from './users/users.controller';
 
-function genId(){
-  return (Math.random().toString()+Math.random().toString());
-}
+/* type which contains token:string property, as well as any other properties passed */
+export type UserReq<T> = T & { token: string };
+export type Usr = {username: string|null, id: string|null};
+
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 @Controller()
 export class AppController {
-  users: User[];
-  posts: Post[];
-
-  constructor() {
+  constructor(
     /*
-    this.users = [
-      Object.assign(new User(),{id:0,username:"U1111"}),
-      Object.assign(new User(),{id:1,username:"U2222"}),
-    ];
-    this.posts = [
-      new Post(genId(),this.users[0].id.toString(),'My first post', 'This is the text of my first post.', ['https://via.placeholder.com/150']),
-      new Post(genId(),this.users[1].id.toString(),'My second post', 'This is the text of my second post.', ['https://via.placeholder.com/150', 'https://via.placeholder.com/150']),
-      new Post(genId(),this.users[0].id.toString(),'My third post', 'This is the text of my third post.', [])
-    ];
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
+    @InjectRepository(PostM)
+    private readonly postRepository: Repository<PostM>) {
     */
+   
+    private readonly usersServices: UserServices,
+    private readonly postsServices: PostServices,
+    private readonly voteServices: VoteServices,
+    private readonly commentServices: CommentServices,
+    
+  ) { }
+
+  @Post("makeTestUsers")
+  async makeTestUsers() {
+    let register = new UserController(this.usersServices).register;
+    [
+      {username:"user1",email:"111@gmail.com",password:"123"},
+      {username:"user2",email:"222@gmail.com",password:"123"},
+      {username:"user3",email:"333@gmail.com",password:"123"},
+      {username:"user4",email:"444@gmail.com",password:"123"}
+    ].forEach(async user=>await register(user));
   }
 
-  @Get("posts")
-  getPosts(): Post[] { return this.posts; }
-  @Get("users")
-  getUsers(): User[] { return this.users; }
+
 }

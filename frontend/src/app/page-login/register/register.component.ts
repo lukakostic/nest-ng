@@ -32,9 +32,11 @@ export class RegisterComponent {
       email: this.email,
       password: this.password
     };
+    //send http post to localhost:3000/register
     
     this.authService.register(userData).subscribe(response => {
       this.registered = true;
     });
+    
   }
 }

@@ -1,0 +1,14 @@
+img {
+    max-height: min(40vw, 350px);
+    object-fit: cover /*contain*/;
+    object-position: center;
+}
+
+h5>a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.post{
+    border: 2px outset grey;
+}

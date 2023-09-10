@@ -1,10 +1,13 @@
-import { Entity, PrimaryGeneratedColumn, Column, Unique } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, Unique, BaseEntity } from 'typeorm';
 
 @Entity()
 @Unique(['username', 'email']) // Ensure username and email are unique
-export class User {
+export class User  extends BaseEntity{
   @PrimaryGeneratedColumn('uuid')
   id!: string;
+
+  @Column({type: 'integer'})
+  timestamp: number; //joined
 
   @Column({ length: 50 })
   username: string;

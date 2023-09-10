@@ -1,1 +1,5 @@
-/* You can add global styles to this file, and also import other style files */
+
+.container.container3 {
+    @extend .container;
+    width: min(99vw, 1400px);
+}

@@ -27,8 +27,8 @@ import { MessageComponent } from './message/message.component';
 import { FeedComponent } from './feed/feed.component';
 import { CreatorComponent } from './creator/creator.component';
 
-import { postFeatureKey, postReducer } from './post.reducer';
-import { PostService, PostEffects } from './post.effects';
+import { postFeatureKey, postReducer } from './post/post.reducer';
+import { PostService, PostEffects } from './post/post.effects';
 
 const routes: Routes = [
   { path: '', component: PageMainComponent },

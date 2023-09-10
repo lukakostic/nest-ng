@@ -1,6 +1,17 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+
 import { AppController } from './app.controller';
+import { UserController } from './users/users.controller';
+import { PostController } from './posts/posts.controller';
+import { VoteController } from './votes/votes.controller';
+import { CommentController } from './comments/comments.controller';
+
+import { UserServices } from './users/users.services';
+import { PostServices } from './posts/posts.services';
+import { VoteServices } from './votes/votes.services';
+import { CommentServices } from './comments/comments.services';
+
 //import { AppService } from './app.service';
 
 //import { UsersModule } from './users/users.module';
@@ -18,7 +29,16 @@ import { AppController } from './app.controller';
     }),
   //  UsersModule, 
   ],
-  controllers: [AppController],
-  //providers: [AppService],
+  controllers: [AppController,
+    UserController,
+    PostController,
+    VoteController,
+    CommentController,
+  ],
+  providers: [UserServices,  
+    PostServices,
+    VoteServices,
+    CommentServices,
+  ],
 })
 export class AppModule {}

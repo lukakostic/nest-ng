@@ -8,21 +8,23 @@ import { UserRegData } from './page-login/register/register.component';
   providedIn: 'root',
 })
 export class AuthService {
-  apiUrl = 'http://localhost:3000/auth';
+  apiUrl = 'http://localhost:3000';
 
   constructor(private http: HttpClient) {}
 
   login(username: string, password: string) {
     return this.http.post(this.apiUrl + '/login', { username, password }).pipe(
       tap((response: any) => {
-        localStorage.setItem('token', response.access_token);
+        console.log("LOGIN RESPONSE",response);
+        //localStorage.setItem('token', response.access_token);
       })
     );
   }
   register(user:UserRegData) {
     return this.http.post(this.apiUrl + '/register', user).pipe(
       tap((response: any) => {
-        localStorage.setItem('token', response.access_token);
+        console.log("REGISTER RESPONSE",response);
+        //localStorage.setItem('token', response.access_token);
       })
     );
   }
