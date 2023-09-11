@@ -6,7 +6,7 @@ export class User  extends BaseEntity{
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
-  @Column({type: 'integer'})
+  @Column({type: 'bigint'})
   timestamp: number; //joined
 
   @Column({ length: 50 })
@@ -15,6 +15,6 @@ export class User  extends BaseEntity{
   @Column({ length: 100 })
   email: string;
 
-  @Column({ length: 50 })
+  @Column()
   password: string;
 }

@@ -20,39 +20,9 @@
   </div>
 </nav>
 
-  
+<p> Logged in user: {{(loggedInUser$ | async)}}</p>
+<p> Logged in token: {{(loginToken$ | async)}}</p>
 
-<div class="container mt-5">
-  <div class="row">
-      <div class="col-md-8">
 
-        
-          <!-- Post Section -->
-          <div class="post">
-              <div class="votes">
-                  <button class="btn btn-light">^</button>
-                  <span>100</span>
-                  <button class="btn btn-light">v</button>
-              </div>
-              <div class="content">
-                  <h3>Post Title</h3>
-                  <p>Post content...</p>
-              </div>
-          </div>
-          <!-- ... add more posts -->
-      </div>
-      <div class="col-md-4">
-          <!-- Sidebar Section -->
-          <div class="sidebar">
-              <h3>Subreddits</h3>
-              <ul>
-                  <li><a href="#">Subreddit 1</a></li>
-                  <li><a href="#">Subreddit 2</a></li>
-                  <li><a href="#">Subreddit 3</a></li>
-              </ul>
-          </div>
-      </div>
-  </div>
-</div>
 
 <router-outlet></router-outlet>

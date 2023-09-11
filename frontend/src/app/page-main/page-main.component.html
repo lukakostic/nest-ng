@@ -1,20 +1,37 @@
-<p>page-main works!</p>
 <h1>Main Page</h1>
 <button routerLink="/login">Go to Login/Register Page</button>
 
 
 <div class="container container3">
-    <div class="row">
+
+  <div class="d-flex pb-4">
+    <button class="btnS w-50" [ngClass]="{'btnS-primary': (mode==0), 'btnS-secondary': (mode!=0)}" 
+      (click)="mode=0">Feed</button>
+      <button class="btnS w-50" [ngClass]="{'btnS-primary': (mode==1), 'btnS-secondary': (mode!=1)}"
+        (click)="mode=1">My Posts</button>
+        <button class="btnS w-50" [ngClass]="{'btnS-primary': (mode==2), 'btnS-secondary': (mode!=2)}"
+          (click)="mode=2">All Posts</button>
+  </div>
+  
+    <div class="row" style="min-height: 80vh;">
       <div class="col-md-2 col-sm-12 bg-light p-3  order-1 order-md-1">
         Left Column
       </div>
       <div class="col-md-8 col-sm-12 p-3 order-3 order-md-2" >
         
-        <app-creator></app-creator>
-        <app-feed></app-feed>
+        <app-creator *ngIf="mode==1"></app-creator>
+        <app-feed *ngIf="mode==0" ></app-feed>
       </div>
       <div class="col-md-2 col-sm-12 bg-light p-3 order-2 order-md-3">
-        Right Column
+        
+        <div class="sidebar">
+          <h3>Following</h3>
+          <ul>
+              <li><a href="#">Subreddit 1</a></li>
+              <li><a href="#">Subreddit 2</a></li>
+              <li><a href="#">Subreddit 3</a></li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>

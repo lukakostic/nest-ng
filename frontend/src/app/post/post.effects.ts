@@ -18,7 +18,7 @@ export class PostService {
       return this.http.get<Post[]>('http://localhost:3000/posts')
     }
     uploadPost(post:Partial<Post>){
-      return this.http.put<Post>('http://localhost:3000/uploadPost',post)
+      return this.http.post<Post>('http://localhost:3000/uploadPost',post)
     }
 }
 

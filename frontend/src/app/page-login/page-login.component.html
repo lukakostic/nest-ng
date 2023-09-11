@@ -1,7 +1,14 @@
-<p>page-login works!</p>
-<h1>Login/Register Page</h1>
-<button routerLink="/">Go to Main Page</button>
+<button class="btn btn-primary mb-5" routerLink="/">Go to Main Page</button>
+<div class="container container3">
+  <div class="d-flex px-5">
+    <button class="btnS w-50" [ngClass]="{'btnS-secondary': !isLogin, 'btnS-primary': isLogin}" 
+      (click)="showLogin()">Login</button>
+    <button class="btnS w-50" [ngClass]="{'btnS-secondary': isLogin, 'btnS-primary': !isLogin}" 
+      (click)="showRegister()">Register</button>
+  </div>
 
-
-<app-login></app-login>
-<app-register></app-register>
+  <div style="max-width: min(calc(100vw - 10px), 600px); margin:auto;">
+    <app-login *ngIf="isLogin"></app-login>
+    <app-register *ngIf="!isLogin"></app-register>
+  </div>
+</div>

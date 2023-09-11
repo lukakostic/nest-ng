@@ -9,7 +9,7 @@ import { StoreModule } from '@ngrx/store';
 import { StoreRouterConnectingModule } from '@ngrx/router-store';
 import { EffectsModule } from '@ngrx/effects';
 
-import { AuthService } from './auth.service';
+import { AuthService } from './auth/auth.service';
 
 import { RouterModule, Routes } from '@angular/router';
 import { AppRoutingModule } from './app-routing.module';
@@ -29,6 +29,8 @@ import { CreatorComponent } from './creator/creator.component';
 
 import { postFeatureKey, postReducer } from './post/post.reducer';
 import { PostService, PostEffects } from './post/post.effects';
+import { AuthEffects, authReducer } from './auth/auth.actions';
+
 
 const routes: Routes = [
   { path: '', component: PageMainComponent },
@@ -58,10 +60,10 @@ const routes: Routes = [
     FormsModule,
     HttpClientModule,
     ReactiveFormsModule,
-    StoreModule.forRoot({ 'feed': postReducer }),
+    StoreModule.forRoot({ 'feed': postReducer, 'auth': authReducer }),
     //StoreModule.forRoot({}, {}),
     StoreRouterConnectingModule.forRoot(),
-    EffectsModule.forRoot([PostEffects])
+    EffectsModule.forRoot([PostEffects,AuthEffects])
   ],
   providers: [AuthService,PostService],
   bootstrap: [AppComponent]

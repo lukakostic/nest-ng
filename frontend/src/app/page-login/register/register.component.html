@@ -1,10 +1,14 @@
-
-<form (submit)="onRegister()">
-  <input type="text" [(ngModel)]="firstName" name="firstName" placeholder="First Name">
-  <input type="text" [(ngModel)]="lastName" name="lastName" placeholder="Last Name">
-  <input type="text" [(ngModel)]="username" name="username" placeholder="Username">
-  <input type="email" [(ngModel)]="email" name="email" placeholder="Email">
-  <input type="password" [(ngModel)]="password" name="password" placeholder="Password">
-  <button type="submit">Register</button>
+<form (submit)="onRegister()" class="p-5 rounded">
+  <h2 class="text-center">Register</h2>
+  <div class="mb-3">
+    <input type="text" class="form-control" [(ngModel)]="username" name="username" placeholder="Username" required>
+  </div>
+  <div class="mb-3">
+    <input type="email" class="form-control" [(ngModel)]="email" name="email" placeholder="Email" required>
+  </div>
+  <div class="mb-3">
+    <input type="password" class="form-control" [(ngModel)]="password" name="password" placeholder="Password" required>
+  </div>
+  <button type="submit" class="btn btn-primary w-100">Register</button>
 </form>
-<p *ngIf="registered">Registered successfully!</p>
+<p *ngIf="registered" class="alert alert-success">Registered successfully!</p>

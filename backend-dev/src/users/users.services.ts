@@ -5,9 +5,10 @@ import {User} from '../_entities/user.entity';
 //import CreateUserDto from './dto/create-user.dto';
 //import BookEntity from '../db/entity/book.entity';
 //import {getConnection} from "typeorm";
-import bcrypt from 'bcrypt';
 
-function OmitUser(u:User|User[]|null){
+const bcrypt = require('bcrypt');
+
+export function OmitUser(u:User|User[]|null){
   if(u instanceof Array) return u.map(OmitUser);
   if(u) u.password = undefined;
   return u;
@@ -43,12 +44,14 @@ export class UserServices {
 
   async getUserExists(obj:{username:string|null,email:string|null}): Promise<boolean> {
     return (
-      (await User.findOne({where: {username: obj.username}}))===null &&
-      (await User.findOne({where: {email: obj.email}}))===null
+      (await User.findOne({where: {username: obj.username}}))!==null ||
+      (await User.findOne({where: {email: obj.email}}))!==null
     );
   }
   async validateUsernamePw(username: string, password: string): Promise<User|null> {
     const user = await User.findOne({where: {username: username}});
+    console.log("validate username pw",user);
+    console.log({username,password})
     if(user===null) return null;
     if(await bcrypt.compare(password,user.password)) return user;
     return null;

@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body } from '@nestjs/common';
 import { User } from '../_entities/user.entity';
 //import { InjectRepository } from '@nestjs/typeorm';
 //import { Repository } from 'typeorm';
-import { UserServices } from '../users/users.services';
+import { UserServices, OmitUser } from '../users/users.services';
 
 import { UserReq,Usr } from '../app.controller';
 
@@ -22,8 +22,8 @@ export class UserController {
     return this.usersServices.getAllUsers();
   }
 
-  @Get("userById")
-  getUserById(id: string) {
+  @Post("userById")
+  getUserById(@Body() id: string) {
     return this.usersServices.getUserById(id);
     //return this.users.find(user=>user.id==id);
   }
@@ -34,22 +34,28 @@ export class UserController {
   }
   @Post("login")
   async login(@Body() userPw : Partial<User>): Promise<{user:User,token:string}>|null {
-    userPw.password = await bcrypt.hash(userPw.password, saltRounds);
+    console.log("logging in",userPw);
+    //userPw.password = await bcrypt.hash(userPw.password, saltRounds);
     let usr = await this.usersServices.validateUsernamePw(userPw!.username,userPw!.password);
     if(usr){
+        console.log("valid username pw");
         let token = genId();
         this.usersServices.loginTokens[token] = usr.id;
-        return {user:usr,token};
+        return {user:OmitUser(usr),token};
     }
     return null;
   }
 
   @Post("register")
   async register(@Body() user: Partial<User>): Promise<{user:User,token:string}|null> {
+    console.log("registering",user);
     let taken = await this.usersServices.getUserExists(user as any);
+    console.log("taken",taken);
     if(taken) return null;
     user.timestamp = Date.now();
+    let pw = user.password;
     user.password = await bcrypt.hash(user.password, saltRounds);
-    return await this.login(await this.usersServices.insert(user as User));
+    console.log("registering2",user);
+    return await this.login({...(await this.usersServices.insert(user as User)),password:pw});
   }
 }
