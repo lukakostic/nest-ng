@@ -15,24 +15,14 @@
   
     <div class="row" style="min-height: 80vh;">
       <div class="col-md-2 col-sm-12 bg-light p-3  order-1 order-md-1">
-        Left Column
+        <!-- <button type="submit" class="btn" [ngClass]="{'btn-primary': (!(loggedInAccount$ | async)), 'btn-outline-primary': ((loggedInAccount$ | async))}" (click)="(loggedInAccount$ | async)?goProfile():goLogin()" style="border-radius: 19px; padding:7px; font-weight: bold;">&nbsp; &nbsp; &nbsp; &nbsp; {{(loggedInAccount$ | async)?(loggedInAccount$ | async).username:"Log in"}} &nbsp; &nbsp; &nbsp; &nbsp;</button> -->
+        <button type="submit" class="btn" [ngClass]="{'btn-primary': (!(loggedInAccount)), 'btn-outline-primary': ((loggedInAccount))}" (click)="(loggedInAccount)?goProfile():goLogin()" style="border-radius: 19px; padding:7px; font-weight: bold;">&nbsp; &nbsp; &nbsp; &nbsp; {{(loggedInAccount)?(loggedInAccount).username:"Log in"}} &nbsp; &nbsp; &nbsp; &nbsp;</button>
       </div>
-      <div class="col-md-8 col-sm-12 p-3 order-3 order-md-2" >
-        
-        <app-creator *ngIf="mode==1"></app-creator>
-        <app-feed *ngIf="mode==0" ></app-feed>
-      </div>
-      <div class="col-md-2 col-sm-12 bg-light p-3 order-2 order-md-3">
-        
-        <div class="sidebar">
-          <h3>Following</h3>
-          <ul>
-              <li><a href="#">Subreddit 1</a></li>
-              <li><a href="#">Subreddit 2</a></li>
-              <li><a href="#">Subreddit 3</a></li>
-          </ul>
-        </div>
-      </div>
+      <app-feed *ngIf="mode==0" [isMyFeed]="true" ></app-feed>
+      <app-feed *ngIf="mode==1" [isMyFeed]="false" ></app-feed>
+      
+      <app-all-feed *ngIf="mode==2"></app-all-feed>
+      
     </div>
   </div>
   

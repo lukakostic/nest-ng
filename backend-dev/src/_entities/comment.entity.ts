@@ -7,10 +7,9 @@ export class CommentM  extends BaseEntity{
   id!: string;
 
   @ManyToOne(() => User, { nullable: false })
-  @JoinColumn()
   public user!: User;
 
-  @Column({type: 'integer'})
+  @Column({type: 'bigint'})
   timestamp: number;
 
   @Column()

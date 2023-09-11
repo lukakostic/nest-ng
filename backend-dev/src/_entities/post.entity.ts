@@ -7,10 +7,10 @@ export class PostM extends BaseEntity {
   id!: string;
 
   @ManyToOne(() => User, { nullable: false })
-  @JoinColumn()
+  //@JoinColumn()
   public user!: User;
   
-  @Column({type: 'integer'})
+  @Column({type: 'bigint'})
   timestamp: number;
   
   

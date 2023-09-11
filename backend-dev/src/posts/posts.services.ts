@@ -1,6 +1,7 @@
 
 import { Injectable } from '@nestjs/common';
 import { PostM } from '../_entities/post.entity';
+import { User } from 'src/_entities/user.entity';
 //import UserEntity from '../db/entity/user.entity';
 //import CreateUserDto from './dto/create-user.dto';
 //import BookEntity from '../db/entity/book.entity';
@@ -30,7 +31,36 @@ export class PostServices {
                 }
             }
         });
-
+    }
+    async feed(userId: string): Promise<PostM[]> {
+        let usr = await User.findOne({ where: { id: userId } });
+        //get table of users followed by usr, join with posts, sort by timestamp
+        return await PostM.createQueryBuilder("post")
+            .leftJoinAndSelect("post.user", "user")
+            .leftJoinAndSelect("user.following", "following")
+            .where("following.from = :id", { id: userId })
+            .orderBy("post.timestamp", "DESC")
+            .getMany();
+        /*
+        return await PostM.find({
+            join: {
+                alias: "post",
+                innerJoinAndSelect: {
+                    user: "post.user"
+                }
+            },
+            where: {
+                user: {
+                    following: {
+                        to: usr
+                    }
+                }
+            },
+            order: {
+                timestamp: "DESC"
+            }
+        });
+        */
     }
     async getPostsByUserUsername(username: string): Promise<PostM[]> {
         return await PostM.find({

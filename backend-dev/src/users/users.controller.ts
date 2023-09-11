@@ -1,10 +1,11 @@
-import { Controller, Get, Post, Body } from '@nestjs/common';
+import { Controller, Get, Post, Body, Query, Param } from '@nestjs/common';
 import { User } from '../_entities/user.entity';
 //import { InjectRepository } from '@nestjs/typeorm';
 //import { Repository } from 'typeorm';
 import { UserServices, OmitUser } from '../users/users.services';
 
 import { UserReq,Usr } from '../app.controller';
+import { Following } from 'src/_entities/following.entity';
 
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
@@ -17,13 +18,41 @@ export class UserController {
     private readonly usersServices: UserServices
   ) { }
 
-  @Get("users")
+  @Get("allUsers")
   getUsers(): Promise<User[]> {
+    console.log("allUsers");
     return this.usersServices.getAllUsers();
   }
 
-  @Post("userById")
-  getUserById(@Body() id: string) {
+
+  @Post("follow")
+  async follow(@Body() r: UserReq<{toFollow:string}>): Promise<Following> {
+    let usr = await this.usersServices.loginToken(r.token);
+    return this.usersServices.followUser(usr.id,r.toFollow);
+  }
+  @Post("followId")
+  async followId(@Body() r: {from:string,toFollow:string}): Promise<Following> {
+    return this.usersServices.followUser(r.from,r.toFollow);
+  }
+  @Get("allFollowing/:id")
+  async allFollowing(@Param('id') id:string): Promise<Following[]> {
+    //let usr = await this.usersServices.loginToken(r.token);
+    return this.usersServices.getAllFollowing(id);
+  }
+  @Get("allFollowers/:id")
+  async allFollowers(@Param('id') id:string): Promise<Following[]> {
+    //let usr = await this.usersServices.loginToken(r.token);
+    return this.usersServices.getAllFollowers(id);
+  }
+  @Post("isFollowing")
+  async isFollowing(@Body() r: UserReq<{userId:string}>): Promise<Following|null> {
+    let usr = await this.usersServices.loginToken(r.token);
+    return this.usersServices.isUserFollowing(usr.id,r.userId);
+  }
+
+  @Get("userById/:id")
+  getUserById(@Param('id') id: string) {
+    console.log("userById",id);
     return this.usersServices.getUserById(id);
     //return this.users.find(user=>user.id==id);
   }
@@ -55,6 +84,7 @@ export class UserController {
     user.timestamp = Date.now();
     let pw = user.password;
     user.password = await bcrypt.hash(user.password, saltRounds);
+    user.description = "";
     console.log("registering2",user);
     return await this.login({...(await this.usersServices.insert(user as User)),password:pw});
   }

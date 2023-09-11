@@ -35,16 +35,33 @@ export class AppController {
     
   ) { }
 
-  @Post("makeTestUsers")
+  @Get("testUsers")
   async makeTestUsers() {
-    let register = new UserController(this.usersServices).register;
-    [
-      {username:"user1",email:"111@gmail.com",password:"123"},
-      {username:"user2",email:"222@gmail.com",password:"123"},
-      {username:"user3",email:"333@gmail.com",password:"123"},
-      {username:"user4",email:"444@gmail.com",password:"123"}
-    ].forEach(async user=>await register(user));
+    let cont = new UserController(this.usersServices);
+    let userCount = await User.count();
+    for(let i=0;i<10;i++){
+      let u = "user"+(userCount+1+i)+"-"+(Math.random()*10).toString().replace(".","").substring(0,4);
+      await cont.register({
+        username:u,
+        email:u+"@gmail.com",
+        password:"123",
+      });
+    }
   }
+  @Get("testFollows")
+  async makeTestFollows() {
+    let cont = new UserController(this.usersServices);
+    let allUsers = await User.find();
+    for(let i=0;i<1;i++){
+      //pick two random users
+      let t1 = allUsers[Math.floor(Math.random()*allUsers.length)].id;
+      let t2 = t1;
+      while(t1===t2) t2 = allUsers[Math.floor(Math.random()*allUsers.length)].id;
+      console.log("follow",t1," -> ",t2);
+      cont.followId({from:t1,toFollow:t2 });  
+    }
+  }
+  
 
 
 }

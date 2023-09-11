@@ -15,12 +15,17 @@ export const createPostsE = createAction(
     props<{ error: any }>()
 );
   
+export const loadFeed = createAction(
+  '[Post] Load Feed',
+  props<{ token: any }>()
+);
 export const loadPosts = createAction(
-  '[Post] Load Posts'
+  '[Post] Load Posts',
+  props<{ id:string|null }>()
 );
 export const loadPostsS = createAction(
   '[Post] Load Posts Success',
-  props<{ posts: Post[] }>()
+  props<{ posts: Post[], postsType:string }>()
 );
 export const loadPostsE = createAction(
   '[Post] Load Posts Error',

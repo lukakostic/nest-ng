@@ -14,33 +14,12 @@ import { Router } from '@angular/router';
   templateUrl: './page-login.component.html',
   styleUrls: ['./page-login.component.scss']
 })
-export class PageLoginComponent implements OnDestroy{
+export class PageLoginComponent {
   isLogin = true;
-  
-  destroyed$ = new Subject<boolean>();
 
-  constructor(
-    private router: Router,
-    private updates$: Actions,
-    private authService: AuthService,
-    private store: Store<State>) {
-      updates$.pipe(
-        ofType(loginS),
-        takeUntil(this.destroyed$)
-     )
-     .subscribe((s) => {
-      console.log("LOGIN STATE",s);
-        
-        this.router.navigate(['/']);
-        //need to import router as service in constructor:
-
-     });
+  constructor() {
     }
 
-  ngOnDestroy() {
-      this.destroyed$.next(true);
-      this.destroyed$.complete();
-  }
 
   showLogin() {
     this.isLogin = true;

@@ -18,15 +18,15 @@ export class PostController {
     private readonly usersServices: UserServices,
     private readonly postsServices: PostServices,
   ) { }
-  @Get("posts")
+  @Get("allPosts")
   getPosts(): Promise<PostM[]> {
     return this.postsServices.getAllPosts();
   }
-  @Post("getPostById")
+  @Post("postById")
   getPostById(@Body() postId: string): Promise<PostM> {
     return this.postsServices.getPostById(postId);
   }
-  @Post("getPostsByUserId")
+  @Post("postsByUser")
   getPostsByUser(@Body() usr: Usr): Promise<PostM[]|null> {
     if(usr.id!==null)
       return this.postsServices.getPostsByUserId(usr.id);
@@ -41,6 +41,13 @@ export class PostController {
     r.post.user = usr;
     r.post.timestamp = Date.now();
     return this.postsServices.insert(r.post as PostM);
+  }
+  @Post("feed")
+  async feed(@Body() r: UserReq<{}>): Promise<PostM[]|null> {
+    let usr = await this.usersServices.loginToken(r.token);
+    if(usr)
+    return this.postsServices.feed(usr.id);
+    else return null;
   }
 
 }

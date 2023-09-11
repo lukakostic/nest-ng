@@ -1,0 +1,19 @@
+
+<div class="col-md-8 col-sm-12 p-3 order-3 order-md-2" >
+        
+    <h3 class="text-muted">Post count: {{(posts$ | async)!.length}}</h3>
+    <div class="Xcontainer mt-3">
+      <app-post *ngFor="let post of (posts$ | async) let i = index" [post]="post" [index]="i"></app-post>
+    </div>
+  </div>
+  <div class="col-md-2 col-sm-12 bg-light p-3 order-2 order-md-3">
+    
+    <div class="sidebar">
+      <h3>All Users: {{allUsers.length}}</h3>
+      <ul>
+        <li *ngFor="let user of allUsers">
+            <a href="/user?id={{user.id}}">{{user.username}}</a>
+        </li>
+      </ul>
+    </div>
+  </div>

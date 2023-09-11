@@ -24,17 +24,24 @@ import { InboxComponent } from './inbox/inbox.component';
 import { PostComponent } from './post/post.component';
 import { CommentComponent } from './comment/comment.component';
 import { MessageComponent } from './message/message.component';
-import { FeedComponent } from './feed/feed.component';
+import { FeedComponent } from './page-main/feed/feed.component';
 import { CreatorComponent } from './creator/creator.component';
 
 import { postFeatureKey, postReducer } from './post/post.reducer';
 import { PostService, PostEffects } from './post/post.effects';
 import { AuthEffects, authReducer } from './auth/auth.actions';
+import { AllFeedComponent } from './page-main/all-feed/all-feed.component';
 
+import {MatMenuModule} from '@angular/material/menu';
+
+import {MatIconModule} from '@angular/material/icon';
+import {MatButtonModule} from '@angular/material/button';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 const routes: Routes = [
   { path: '', component: PageMainComponent },
-  { path: 'login', component: PageLoginComponent }
+  { path: 'login', component: PageLoginComponent },
+  { path: 'user', component: PageAccountComponent }
 ];
 
 
@@ -51,7 +58,8 @@ const routes: Routes = [
     CommentComponent,
     MessageComponent,
     FeedComponent,
-    CreatorComponent
+    CreatorComponent,
+    AllFeedComponent
   ],
   imports: [
     BrowserModule,
@@ -63,7 +71,9 @@ const routes: Routes = [
     StoreModule.forRoot({ 'feed': postReducer, 'auth': authReducer }),
     //StoreModule.forRoot({}, {}),
     StoreRouterConnectingModule.forRoot(),
-    EffectsModule.forRoot([PostEffects,AuthEffects])
+    EffectsModule.forRoot([PostEffects,AuthEffects]),
+    BrowserAnimationsModule,
+    MatMenuModule,MatIconModule,MatButtonModule
   ],
   providers: [AuthService,PostService],
   bootstrap: [AppComponent]
