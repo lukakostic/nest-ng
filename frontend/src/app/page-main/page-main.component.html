@@ -1,27 +1,45 @@
+<!--
 <h1>Main Page</h1>
 <button routerLink="/login">Go to Login/Register Page</button>
-
+-->
 
 <div class="container container3">
 
-  <div class="d-flex pb-4">
-    <button class="btnS w-50" [ngClass]="{'btnS-primary': (mode==0), 'btnS-secondary': (mode!=0)}" 
+  <div class="d-flex pb-4" >
+    <button class="btnS w-100" *ngIf="loggedInAccount!=null && mode!=3" [ngClass]="{'btnS-primary': (mode==0), 'btnS-secondary': (mode!=0)}" 
       (click)="mode=0">Feed</button>
-      <button class="btnS w-50" [ngClass]="{'btnS-primary': (mode==1), 'btnS-secondary': (mode!=1)}"
-        (click)="mode=1">My Posts</button>
-        <button class="btnS w-50" [ngClass]="{'btnS-primary': (mode==2), 'btnS-secondary': (mode!=2)}"
-          (click)="mode=2">All Posts</button>
+    <button class="btnS w-100" *ngIf="loggedInAccount!=null && mode!=3" [ngClass]="{'btnS-primary': (mode==1), 'btnS-secondary': (mode!=1)}"
+      (click)="mode=1">My Posts</button>
+    <button class="btnS w-100" *ngIf="mode!=3" [ngClass]="{'btnS-primary': (mode==2), 'btnS-secondary': (mode!=2)}"
+      (click)="mode=2">All Posts</button>
+    <button class="btnS w-100" *ngIf="mode==3" [ngClass]="{'btnS-primary': (mode==3), 'btnS-secondary': (mode!=3)}"
+      >Profile Overview: @{{loadedProfile?.username}}</button>
   </div>
   
     <div class="row" style="min-height: 80vh;">
-      <div class="col-md-2 col-sm-12 bg-light p-3  order-1 order-md-1">
+      <div class="col-md-3 col-sm-12 bg-light p-3  order-1 order-md-1">
         <!-- <button type="submit" class="btn" [ngClass]="{'btn-primary': (!(loggedInAccount$ | async)), 'btn-outline-primary': ((loggedInAccount$ | async))}" (click)="(loggedInAccount$ | async)?goProfile():goLogin()" style="border-radius: 19px; padding:7px; font-weight: bold;">&nbsp; &nbsp; &nbsp; &nbsp; {{(loggedInAccount$ | async)?(loggedInAccount$ | async).username:"Log in"}} &nbsp; &nbsp; &nbsp; &nbsp;</button> -->
-        <button type="submit" class="btn" [ngClass]="{'btn-primary': (!(loggedInAccount)), 'btn-outline-primary': ((loggedInAccount))}" (click)="(loggedInAccount)?goProfile():goLogin()" style="border-radius: 19px; padding:7px; font-weight: bold;">&nbsp; &nbsp; &nbsp; &nbsp; {{(loggedInAccount)?(loggedInAccount).username:"Log in"}} &nbsp; &nbsp; &nbsp; &nbsp;</button>
+        <button type="submit" class="btn w-100" [ngClass]="{'btn-primary': (!(loggedInUser$|async)), 'btn-outline-primary': ((loggedInUser$|async))}" (click)="(loggedInAccount)?goProfileBadge():goLogin()" style="border-radius: 19px; padding:7px; font-weight: bold;">{{(loggedInUser$|async)?(loggedInUser$|async)!.username:"Log in"}}</button>
+        <div #matMenuTrigger="matMenuTrigger" [matMenuTriggerFor]="menu"></div>
+        <mat-menu #menu="matMenu" yPosition="below" >
+          <button mat-menu-item (click)="goProfile(null)" >
+              <mat-icon>edit</mat-icon> <span>Profile Page</span>
+          </button>
+          <hr style="color: lightgray; margin: 5px;">
+          <button mat-menu-item (click)="goLogout()"  *ngIf="loggedInAccount" >
+              <mat-icon>login</mat-icon> <span>Logout @{{loggedInAccount!.username}}</span>
+          </button>
+        </mat-menu>
+
+        <button class="btn btnI w-100"  [ngClass]="{'btn-primary': (mode<3), 'btn-outline-primary': (mode>=3)}" (click)="goFeed()">Feed</button>
+        <button class="btn btnI w-100"  [ngClass]="{'btn-primary': (mode==3), 'btn-outline-primary': (mode!=3)}" (click)="goProfile(null)" >Profile</button>
       </div>
+      
       <app-feed *ngIf="mode==0" [isMyFeed]="true" ></app-feed>
       <app-feed *ngIf="mode==1" [isMyFeed]="false" ></app-feed>
       
-      <app-all-feed *ngIf="mode==2"></app-all-feed>
+      <app-all-feed *ngIf="mode==2" [mainPage]="this"></app-all-feed>
+      <app-page-account *ngIf="mode==3" (userLoaded)="doLoadProfile($event)"></app-page-account>
       
     </div>
   </div>

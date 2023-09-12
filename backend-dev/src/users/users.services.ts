@@ -20,7 +20,9 @@ export class UserServices {
 
   loginTokens = {} as { [token: string]: string }; //map of token to user id
   loginToken(token: string): Promise<User> | null {
-    if (token in this.loginTokens) return this.getUserById(this.loginTokens[token]);
+    console.log("token:",token,this.loginTokens[token]);
+    console.log(this.loginTokens);
+    if (this.loginTokens[token]) return this.getUserById(this.loginTokens[token]);
     return null;
   }
 
@@ -34,6 +36,7 @@ export class UserServices {
     return OmitUser(await User.find());
   } 
   async getUserById(userId: string): Promise<User> {
+    console.log("get user by id ",userId);
     return OmitUser(await User.findOne({where: {id: userId}}));
   }
   async getUserByEmail(email: string): Promise<User> {

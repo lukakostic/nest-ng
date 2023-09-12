@@ -3,7 +3,7 @@ import { User } from './user.model';
 //import { Post } from './post.model';
 
 
-export type UserToken = { token:string, user:User };
+export type UserToken = { token:string|null, user:User|null };
 
 export const loginRequest = createAction(
   '[Auth] Login Request',
@@ -70,7 +70,7 @@ export class AuthEffects {
       .pipe(
         map((res:any)  => {
             console.log("login request res",res);
-            if(res == null) return loginE({error:"Login error"});
+            if(res == null || res?.token==null) return loginE({error:"Login error"});
             this.authService.loggedIn(res!.user, res!.token);
             return loginS(res);
             //return PostActions.loadPostsS({ posts })

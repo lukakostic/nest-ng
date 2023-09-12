@@ -1,6 +1,8 @@
-<button class="btn btn-primary mb-5" routerLink="/">Go to Main Page</button>
-<div class="container container3">
-  <div class="d-flex px-5">
+
+<div class="container mt-5" style="max-width: 600px;">
+  <button class="btn btn-outline-secondary" style="border-radius: 50%; position: fixed; top: min(10vh,200px); right: max(calc(50vw - 500px),30px); opacity: 0.5;" routerLink="/">X</button>
+  
+  <div class="d-flex px-5 mb-3">
     <button class="btnS w-50" [ngClass]="{'btnS-secondary': !isLogin, 'btnS-primary': isLogin}" 
       (click)="showLogin()">Login</button>
     <button class="btnS w-50" [ngClass]="{'btnS-secondary': isLogin, 'btnS-primary': !isLogin}" 

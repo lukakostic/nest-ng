@@ -41,7 +41,7 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 const routes: Routes = [
   { path: '', component: PageMainComponent },
   { path: 'login', component: PageLoginComponent },
-  { path: 'user', component: PageAccountComponent }
+  { path: 'user', component: PageMainComponent }
 ];
 
 

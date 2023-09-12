@@ -11,7 +11,7 @@ const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
 function genId(){return (Math.random().toString()+Math.random().toString());}
-
+export type UserToken = {token:string,user:User};
 @Controller()
 export class UserController {
   constructor(
@@ -58,11 +58,14 @@ export class UserController {
   }
 
   @Post("loginByToken")
-  async loginByToken(@Body() token: string): Promise<User>|null {
-    return this.usersServices.loginToken(token);
+  async loginByToken(@Body() r:{token: string}): Promise<UserToken>|null {
+    console.log("login by token ",r.token);
+    let usr = await this.usersServices.loginToken(r.token);
+    if(!usr) return {token:null,user:null};
+    return {token:r.token,user: usr};
   }
   @Post("login")
-  async login(@Body() userPw : Partial<User>): Promise<{user:User,token:string}>|null {
+  async login(@Body() userPw : Partial<User>): Promise<UserToken>|null {
     console.log("logging in",userPw);
     //userPw.password = await bcrypt.hash(userPw.password, saltRounds);
     let usr = await this.usersServices.validateUsernamePw(userPw!.username,userPw!.password);

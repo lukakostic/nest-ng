@@ -1,13 +1,13 @@
 
-<div class="col-md-8 col-sm-12 p-3 order-3 order-md-2" >
+<div class="col-md-6 col-sm-12 p-3 order-3 order-md-2" >
         
   <app-creator *ngIf="isMyFeed==false"></app-creator>
-  <hr *ngIf="isMyFeed==false">
   <div class="Xcontainer mt-3">
     <app-post *ngFor="let post of (posts$ | async) let i = index" [post]="post" [index]="i"></app-post>
+    <h1 *ngIf="(posts$ | async)?.length==0" class="text-muted" style="opacity: 0.5; text-align: center; margin-top: 40px;">No posts here..</h1>
   </div>
 </div>
-<div class="col-md-2 col-sm-12 bg-light p-3 order-2 order-md-3">
+<div class="col-md-3 col-sm-12 bg-light p-3 order-2 order-md-3">
   
   <div class="sidebar">
     <h3>Following</h3>

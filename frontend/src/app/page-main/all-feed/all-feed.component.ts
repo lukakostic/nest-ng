@@ -1,6 +1,6 @@
 
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Observable, Subject, takeUntil, tap,take, exhaustMap } from 'rxjs';
 //import * as PostActions from '../post/post.actions';
 import { Actions, ofType } from '@ngrx/effects';
@@ -9,6 +9,7 @@ import { Post } from '../../post/post.model';
 import * as PostActions from '../../post/post.actions';
 import { State } from '../../post/post.reducer';
 import { User } from 'src/app/auth/user.model';
+import { PageMainComponent } from '../page-main.component';
 
 
 @Component({
@@ -18,6 +19,7 @@ import { User } from 'src/app/auth/user.model';
 })
 export class AllFeedComponent implements OnInit{
 
+  @Input() mainPage : PageMainComponent;
   posts$: Observable<Post[]> = this.store.select(state=> ((state as any)['feed']).posts );
 
   constructor(
