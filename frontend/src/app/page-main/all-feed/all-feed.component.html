@@ -1,12 +1,13 @@
 
 <div class="col-md-6 col-sm-12 p-3 order-3 order-md-2" >
-        
+  <ng-container [ngTemplateOutlet]="head"></ng-container>
+  
     <h3 class="text-muted">Post count: {{(posts$ | async)!.length}}</h3>
     <div class="Xcontainer mt-3">
       <app-post *ngFor="let post of (posts$ | async) let i = index" [post]="post" [index]="i"></app-post>
     </div>
   </div>
-  <div class="col-md-3 col-sm-12 bg-light p-3 order-2 order-md-3">
+  <div class="col-md-3 col-sm-12 p-3 pt-5 order-2 order-md-3" style="color: white;">
     
     <div class="sidebar">
       <h3>All Users: {{allUsers.length}}</h3>

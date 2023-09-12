@@ -1,6 +1,8 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav class="navbar navbar-expand-lg navbar-light">
   <div class="container-fluid">
-      <a class="navbar-brand" href="#">Reddit Clone</a>
+      <img class="navbar-brand" src="assets/twitter.svg" style="margin-left:50px; margin-top:20px; width: 40px;">
+      <h1 style="color:darkgray; margin-right: auto; margin-top:20px;margin-left:-10px;">tweety</h1>
+      <!--
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
       </button>
@@ -17,12 +19,13 @@
               </li>
           </ul>
       </div>
+      -->
   </div>
 </nav>
-
-<p> Logged in user: {{(loggedInUser$ | async)}}</p>
-<p> Logged in token: {{(loginToken$ | async)}}</p>
-
+<!--
+<a> Logged in user: {{(loggedInUser$ | async)}}</a>
+<a> Logged in token: {{(loginToken$ | async)}}</a>
+-->
 
 
 <router-outlet></router-outlet>

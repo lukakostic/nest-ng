@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, TemplateRef } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable, take } from 'rxjs';
 import { Post } from '../../post/post.model';
@@ -12,7 +12,7 @@ import { State } from '../../post/post.reducer';
   styleUrls: ['./feed.component.scss']
 })
 export class FeedComponent implements OnInit {
-
+  @Input() head: TemplateRef<any>;
   @Input() isMyFeed: boolean = false;
   
   posts$: Observable<Post[]> = this.store.select(state=> ((state as any)['feed']).posts );

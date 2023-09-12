@@ -6,7 +6,7 @@ import { User } from '../auth/user.model';
 //import * as PostActions from '../post/post.actions';
 import { AuthEffects,State, loginRequest, loginS } from '../auth/auth.actions';
 import { Actions, ofType } from '@ngrx/effects';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
 import { ActivatedRoute, UrlSegment } from '@angular/router';
 
@@ -67,17 +67,27 @@ export class PageMainComponent implements OnInit {
       this.router.navigate(['/']);
     }
     goFeed(){
+      if(this.mode!=0) this.mode = 0;
       this.router.navigate(['/']);
     }
     doLoadProfile(usr:User){
       this.loadedProfile = usr;
     }
-    ngOnInit(): void {
-      //console.log("MAIN PAGE INIT",this.loggedInAccount);
+
+    calcRoute(){
       const segments: UrlSegment[] = this.route.snapshot.url;
       if(this.loggedIn==false && this.mode!=3) this.mode=2;
       if(segments.length>0 && segments[0].path =='user') this.mode=3;
+    }
+    ngOnInit(): void {
+      //console.log("MAIN PAGE INIT",this.loggedInAccount);
 
+      this.calcRoute();
+      this.router.events.subscribe(e=>{
+        if(e instanceof NavigationEnd){
+          this.calcRoute();
+        }
+      })
 
     }
 }

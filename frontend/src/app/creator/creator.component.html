@@ -1,4 +1,4 @@
-<div class="card p-3 Xcontainer" style="margin-bottom: 40px">
+<div class="card p-3 Xcontainer" style="margin-bottom: 40px; background-color: transparent; border: 2px solid darkgrey;">
     <form [formGroup]="postForm" (ngSubmit)="onSubmit()">
       <div class="mb-3">
         <input type="text" placeholder="Title" class="form-control" id="title" formControlName="title" required>
@@ -9,10 +9,10 @@
       <div class="mb-3">
         <div class="input-group">
           <input type="url" class="form-control" id="image" formControlName="image" placeholder="https://image-example.com">
-          <button class="btn btn-outline-secondary" type="button" (click)="onAddImage()">Add Image</button>
+          <button class="btn btn-secondary" type="button" (click)="onAddImage()">Add Image</button>
         </div>
         <div *ngFor="let image of images; let i = index" class="mt-2 d-flex justify-content-between align-items-center">
-          <a [href]="image" target="_blank">{{ image }}</a>
+          <a [href]="image" style="color:white; text-decoration: none;">{{ image }}</a>
           <button class="btn btn-danger btn-sm" type="button" (click)="onRemoveImage(i)">Remove Image</button>
         </div>
       </div>

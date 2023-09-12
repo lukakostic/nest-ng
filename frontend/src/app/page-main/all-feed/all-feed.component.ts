@@ -1,6 +1,6 @@
 
 import { HttpClient } from '@angular/common/http';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, TemplateRef } from '@angular/core';
 import { Observable, Subject, takeUntil, tap,take, exhaustMap } from 'rxjs';
 //import * as PostActions from '../post/post.actions';
 import { Actions, ofType } from '@ngrx/effects';
@@ -18,7 +18,7 @@ import { PageMainComponent } from '../page-main.component';
   styleUrls: ['./all-feed.component.scss']
 })
 export class AllFeedComponent implements OnInit{
-
+  @Input() head: TemplateRef<any>;
   @Input() mainPage : PageMainComponent;
   posts$: Observable<Post[]> = this.store.select(state=> ((state as any)['feed']).posts );
 

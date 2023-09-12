@@ -4,19 +4,49 @@
     height: 4em;
     font-weight: bold;
     border-radius: 0;
-    color: black;
+    color: white;
+    background-color: transparent !important;
+    border: none;
   }
   .btnS-primary {
     @extend .btnS-primary;
-    border: 1px solid rgb(163, 197, 219);
-    border-bottom: 3px solid #0d6efd;
+    // border: 1px solid rgb(163, 197, 219);
+    border-bottom: 4px solid #0d6efd;
     background-color: #e7f2ff;
   }
   .btnS-secondary {
     @extend .btnS-secondary;
-    border: 1px solid rgb(223, 223, 223);
-    border-bottom: 3px solid #7f878e;
+    // border: 1px solid rgb(223, 223, 223);
+    border-bottom: 1px solid #686c6f;
     background-color: #f9fafb;
+    font-weight: 400;
+  }
+  .btnI{
+    color: white;
+  }
+  .btnI{
+
+  }
+  .btnI{
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    display: block;
+    //margin-left: 30px;
+    //margin-right: 30px;
+    width: 80% !important;
+  }
+  .btn-info.btnI{
+    background-color: transparent;
+    border-width: 3px;
+    color: white;
+    font-weight: 600;
+  }
+  .btn-info.btnI:hover{
+    background-color: rgba(134, 225, 255, 0.2);
+  }
+  .btn-outline-primary.btnI:hover{
+    background-color: rgba(73, 116, 255, 0.337);
   }
 
 .container.container3 {
@@ -24,5 +54,7 @@
     min-width: min(calc(100vw - 10px), 1400px);
     max-width: min(calc(100vw - 10px), 1400px);
 }
-html, body { height: 100%; }
+html, body { height: 100%; 
+background-color: rgb(23, 25, 25);
+}
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

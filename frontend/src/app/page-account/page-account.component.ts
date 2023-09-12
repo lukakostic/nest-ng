@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, TemplateRef } from '@angular/core';
 import { ActivatedRoute, Router, Event, NavigationEnd } from '@angular/router';
 import { AuthService } from '../auth/auth.service';
 import { Store } from '@ngrx/store';
@@ -17,6 +17,7 @@ import { PageMainComponent } from '../page-main/page-main.component';
 
 })
 export class PageAccountComponent implements OnInit{
+  @Input() head: TemplateRef<any>;
   @Output() userLoaded = new EventEmitter<User>();
 
   //@Input() mainPage : PageMainComponent;

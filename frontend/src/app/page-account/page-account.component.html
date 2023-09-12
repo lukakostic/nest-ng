@@ -1,10 +1,10 @@
 
 <div class="col-md-6 col-sm-12 p-3 order-3 order-md-2" >
-      
-<h1>{{user?.username}} 
-    <button mat-icon-button style="display: inline;" [matMenuTriggerFor]="menu" aria-label="Account options">
-        <mat-icon>more_vert</mat-icon>
-      </button>
+    <ng-container [ngTemplateOutlet]="head"></ng-container>
+  <div>
+<h1 style="color: white;">
+    <span style="float: left;">{{user?.username}}</span>
+      &nbsp;
       <mat-menu #menu="matMenu" yPosition="below">
         <button mat-menu-item (click)="edit()" >
             <mat-icon>edit</mat-icon> <span>Edit</span>
@@ -16,22 +16,27 @@
         <button mat-menu-item (click)="loginBypass()" >
             <mat-icon>login</mat-icon> <span>LoginBypass</span>
         </button>
-      </mat-menu></h1>
-      <p class="fs-6 fw-bold" style="margin-top:-10px; color:grey;">Joined {{userDate()}}</p>
-    <div class="card">
-        <a>{{user?.description}}</a>
+      </mat-menu>
+      <span class="fs-6 fw-bold" style="color:grey; float: right;margin-right:35px;font-size: 15px !important;">Joined {{userDate()}}<button mat-icon-button style="display: inline;position: absolute; margin-top: -10px; color: darkgray; opacity: 0.5;" [matMenuTriggerFor]="menu" aria-label="Account options">
+        <mat-icon>more_vert</mat-icon>
+      </button></span>
+    </h1>
+
     </div>
+    <div class="card my-4" style="min-height: 60px; color: white; background-color: transparent; border: 1px solid grey; padding: 10px;">
+        <span *ngIf="user && user.description.length>0">{{user?.description}}</span>
+        <span *ngIf="user==null || user.description.length==0" style="color:grey;"> No description. </span>
+    </div>
+  <hr style="border-color: white;">
 
-  
-
-<div class="Xcontainer mt-3">
+<div class="Xcontainer mt-4">
     
     <!-- <app-post *ngFor="let post of (posts$ | async) let i = index" [post]="post" [index]="i"></app-post> -->
     <app-post *ngFor="let post of posts let i = index" [post]="post" [index]="i"></app-post>
-    <h1 *ngIf="posts.length==0" class="text-muted">User has no posts</h1>
+    <h1 *ngIf="posts.length==0" style="color: grey;">User has no posts</h1>
 </div>
 </div>
-<div class="col-md-3 col-sm-12 bg-light p-3 order-2 order-md-3">
+<div class="col-md-3 col-sm-12 p-3 pt-5 order-2 order-md-3" style="color: white;">
   <!--
   <div class="sidebar">
     <h3>Following</h3>
