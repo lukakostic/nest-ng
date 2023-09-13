@@ -6,7 +6,9 @@ import { User } from './user/user.model';
 import { Router } from '@angular/router';
 import { UserService } from './user/user.service';
 //import * as PostActions from '../post/post.actions';
-import { AuthEffects,State, loginRequest, loginS, loginTokRequest } from './user/auth.actions';
+import { AuthEffects } from './user/user.effects';
+import { State } from './user/user.reducer';
+import * as UserActions from './user/user.actions';
 import { Actions, ofType } from '@ngrx/effects';
 
 
@@ -24,7 +26,6 @@ export class AppComponent implements OnInit {
     console.log("Logged in user change! ",JSON.stringify((state as any)['auth']));
     return ((state as any)['auth']).loggedInUser;
   });
-  loginToken$: Observable<string> = this.store.select(state=> ((state as any)['auth']).token );
   //posts$: Observable<Post[]> = this.store.select(state=> ((state as any)['feed']).posts );
 
   constructor(private store: Store<State>,
@@ -33,7 +34,7 @@ export class AppComponent implements OnInit {
     private authService: UserService
     ) {
       updates$.pipe(
-        ofType(loginS),
+        ofType(UserActions.loginS),
         takeUntil(this.destroyed$)
      )
      .subscribe((s) => {
@@ -46,7 +47,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     if(this.authService.hasLoginToken())
-        this.store.dispatch(loginTokRequest({redirect:false}));//PostActions.loadPosts());
+        this.store.dispatch(UserActions.loginTokRequest({redirect:false}));//PostActions.loadPosts());
   }
   ngOnDestroy() {
       this.destroyed$.next(true);

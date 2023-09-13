@@ -47,6 +47,13 @@ export class UserServices {
     return OmitUser(await User.findOne({where: {username: username}}));
   }
 
+  async editDescription(userId:string,newDesc:string) {
+    let usr = await User.findOne({where: {id: userId}});
+    usr.description = newDesc;
+    return OmitUser(await User.save(usr));
+    
+  }
+
   async getUserExists(obj:{username:string|null,email:string|null}): Promise<boolean> {
     return (
       (await User.findOne({where: {username: obj.username}}))!==null ||

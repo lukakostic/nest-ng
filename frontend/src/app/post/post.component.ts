@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angu
 import { Post } from '../post/post.model';
 import { UserService } from '../user/user.service';
 import { Store } from '@ngrx/store';
-import { State } from '../user/auth.actions';
+import { State } from '../user/user.reducer';
 import { take } from 'rxjs';
 
 @Component({

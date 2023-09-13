@@ -1,11 +1,12 @@
 
 import { Injectable } from '@angular/core';
 import { take, tap } from 'rxjs/operators';
-import { UserRegData } from '../page-login/register/register.component';
 import { Observable, map } from 'rxjs';
 import { User } from './user.model';
 import { Store } from '@ngrx/store';
-import { AuthEffects,State, loginRequest, loginS } from './auth.actions';
+import * as UserActions from './user.actions';
+import { AuthEffects } from './user.effects';
+import { State } from './user.reducer';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Injectable({
@@ -36,6 +37,7 @@ export class UserService {
   }
   
 
+  /*
   login(username: string, password: string) {
     return this.http.post(this.apiUrl + '/login', { username, password }).pipe(
       tap((response: any) => {
@@ -51,7 +53,7 @@ export class UserService {
         //localStorage.setItem('token', response.access_token);
       })
     );
-  }
+  }*/
 
   private getLoginToken() {
     return localStorage.getItem('token');
@@ -62,7 +64,7 @@ export class UserService {
 
   logout() {
     localStorage.removeItem('token');
-    this.store.dispatch(loginS({token:null,user:null}));
+    this.store.dispatch(UserActions.loginS({token:null,user:null}));
   }
 
 

@@ -11,4 +11,4 @@
   </div>
   <button type="submit" class="btn btn-primary w-100 mt-4">Register</button>
 </form>
-<p *ngIf="registered" class="alert alert-success">Registered successfully!</p>
+<h1 *ngIf="(error$|async)" class="text-center" style="color: red;">Last Error: {{(error$|async)}}</h1>

@@ -5,7 +5,7 @@ import { UserService } from '../user/user.service';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { User } from '../user/user.model';
-import { State } from '../user/auth.actions';
+import { State } from '../user/user.reducer';
 
 @Component({
   selector: 'app-comment',

@@ -8,4 +8,5 @@
   </div>
   <button type="submit" class="btn btn-primary w-100 mt-4">Login</button>
 </form>
-<p *ngIf="loggedIn" class="alert alert-success">Logged in as: {{ username }}</p>
+<h1 *ngIf="(error$|async)" class="text-center" style="color: red;">Last Error: {{(error$|async)}}</h1>
+<!-- <p *ngIf="loggedIn" class="alert alert-success">Logged in as: {{ username }}</p> -->

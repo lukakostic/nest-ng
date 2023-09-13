@@ -28,7 +28,8 @@ import { CreatorComponent } from './page-main/creator/creator.component';
 
 import { postFeatureKey, postReducer } from './post/post.reducer';
 import { PostService, PostEffects } from './post/post.effects';
-import { AuthEffects, authReducer } from './user/auth.actions';
+import { AuthEffects } from './user/user.effects';
+import { authReducer } from './user/user.reducer';
 import { AllFeedComponent } from './page-main/all-feed/all-feed.component';
 
 import {MatMenuModule} from '@angular/material/menu';

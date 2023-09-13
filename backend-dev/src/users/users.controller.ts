@@ -40,6 +40,13 @@ export class UserController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Post("editMyDescription")
+  async editMyDescription(@Body() r: UserReq<{desc:string}>): Promise<User>|null {
+    let usr = await this.usersServices.loginToken(r.token);
+    if(usr==null) return null;
+    return await this.usersServices.editDescription(usr.id,r.desc);
+  }
+  @UseGuards(JwtAuthGuard)
   @Post("loginByToken")
   async loginByToken(@Body() r:{token: string}): Promise<UserToken>|null {
     console.log("login by token ",r.token);
@@ -50,6 +57,9 @@ export class UserController {
 
   @Post("register")
   async register(@Body() user: Partial<User>): Promise<{user:User,token:string}|null> {
+    //check if username contains any special characters
+    if(user.username.match(/[^a-zA-Z0-9]/)) return null;
+    
     console.log("registering",user);
     if(await this.usersServices.getUserExists(user as any)) return null; //check taken
     user.timestamp = Date.now();

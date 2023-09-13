@@ -9,7 +9,7 @@ import { Store } from '@ngrx/store';
 import { State } from '../../post/post.reducer';
 import { Subject, map, take, takeUntil } from 'rxjs';
 import { UserService } from '../../user/user.service';
-import { loginS } from 'src/app/user/auth.actions';
+import { loginS } from 'src/app/user/user.actions';
 import { Router } from '@angular/router';
 
 @Component({

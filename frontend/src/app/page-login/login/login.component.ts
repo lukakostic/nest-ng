@@ -4,7 +4,10 @@ import { Store } from '@ngrx/store';
 import { Observable, Subject, takeUntil } from 'rxjs';
 import { User } from '../../user/user.model';
 //import * as PostActions from '../post/post.actions';
-import { AuthEffects,State, loginRequest, loginS } from '../../user/auth.actions';
+import { AuthEffects } from 'src/app/user/user.effects';
+import { State } from 'src/app/user/user.reducer';
+import * as UserActions from '../../user/user.actions';
+
 import { Actions, ofType } from '@ngrx/effects';
 
 //import * as PostActions from '../post/post.actions';
@@ -17,22 +20,18 @@ import { Actions, ofType } from '@ngrx/effects';
 export class LoginComponent {
   username: string = "";
   password: string = "";
-  loggedIn: boolean = false;
+
+  error$ = this.store.select(state=> ((state as any)['auth']).error);
 
   constructor(
     private authService: UserService,
-    private store: Store<State>) {
+    private store: Store<State>)
+     {
       
     }
 
   onLogin() {
-    console.log("on login");
-    this.store.dispatch(loginRequest({username:this.username,password:this.password,redirect:true}));
-    /*
-    this.authService.login(this.username, this.password).subscribe(user => {
-      this.loggedIn = true;
-    });*/
-
+    this.store.dispatch(UserActions.loginRequest({username:this.username,password:this.password,redirect:true}));
   }
 
 }

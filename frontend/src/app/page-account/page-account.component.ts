@@ -6,7 +6,9 @@ import { Store } from '@ngrx/store';
 import { Observable, Subject, takeUntil, tap } from 'rxjs';
 import { User } from '../user/user.model';
 //import * as PostActions from '../post/post.actions';
-import { AuthEffects,State, loginRequest, loginS } from '../user/auth.actions';
+import { AuthEffects } from '../user/user.effects';
+import { State } from '../user/user.reducer';
+import * as UserActions from '../user/user.actions';
 import { Actions, ofType } from '@ngrx/effects';
 import { Post } from '../post/post.model';
 import { PageMainComponent } from '../page-main/page-main.component';
@@ -28,7 +30,7 @@ export class PageAccountComponent implements OnInit{
   isFollowing:boolean = false;
   following:Following|null = null;
   
-  editUser: User|null = null;
+  editUser: User = new User("","","",-1);
   editMode: boolean = false;
   
   followerUsers: User[] | null = null;
@@ -137,18 +139,22 @@ userDate(){
 }
   loginBypass(){
     console.log("login bypass")
-    this.store.dispatch(loginRequest({username:this.user!.username,password:"123",redirect:true}));
+    this.store.dispatch(UserActions.loginRequest({username:this.user!.username,password:"123",redirect:true}));
   }
   edit(){
-
+    this.editUser = {...this.user} as any;
+    this.editMode = true;
   }
   getUrl(){
     alert(this.user!.id);
   }
   saveEdit(){
-
+    this.authService.reqPost('/editMyDescription',{desc:this.editUser?.description}).subscribe((response: any) => {
+        this.user = response;
+    });
+    this.editMode = false;
   }
   cancelEdit(){
-
+    this.editMode = false;
   }
 }

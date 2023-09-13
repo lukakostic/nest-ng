@@ -24,9 +24,14 @@
     </h1>
 
     </div>
-    <div class="card my-4" style="min-height: 60px; color: white; background-color: transparent; border: 1px solid grey; padding: 10px;">
-        <span *ngIf="user && user.description.length>0">{{user?.description}}</span>
+    <div *ngIf="!editMode" class="card my-4" style="min-height: 60px; color: white; background-color: transparent; border: 1px solid grey; padding: 10px;">
+        <span *ngIf="user && user.description.length>0" style="white-space: pre-wrap; font-size: 17px; line-height: 22px;">{{user?.description}}</span>
         <span *ngIf="user==null || user.description.length==0" style="color:grey;"> No description. </span>
+    </div>
+    <div *ngIf="editMode">
+        <textarea class="form-control" style="color: white; background-color: transparent; border: 1px solid grey;" [(ngModel)]="editUser.description" placeholder="Description"></textarea>
+        <button class="btn btn-outline-primary" style="color:rgb(255, 255, 255); border-width: 2px;" (click)="saveEdit()">Save</button>
+        <button class="btn btn-outline-danger" style="color:rgb(255, 204, 204);" (click)="cancelEdit()">Cancel</button>
     </div>
     <div style="height: 30px;">
         <button class="px-5 btn btn-outline-primary" style="color:rgb(255, 255, 255); border-width: 2px;" *ngIf="loggedIn && user?.id != loggedInAccount?.id && !isFollowing" (click)="followUser()">Follow</button>
