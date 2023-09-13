@@ -32,9 +32,9 @@ export class AllFeedComponent implements OnInit{
 
   ngOnInit(): void {
  console.log("LOAD POSTS: load all posts.");
-    this.store.dispatch(PostActions.loadPosts({token:this.authService.getLoginToken(),id:null}));
+    this.store.dispatch(PostActions.loadPosts({id:null}));
     console.log("ALL users ping");
-    this.http.get('http://localhost:3000/allUsers').subscribe((response: any) => {
+    this.authService.reqGet('/allUsers').subscribe((response: any) => {
         
       console.log("ALL users ",response);
       this.allUsers = response;

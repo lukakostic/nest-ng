@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+
 import { Component, EventEmitter, Input, OnInit, Output, TemplateRef } from '@angular/core';
 import { ActivatedRoute, Router, Event, NavigationEnd } from '@angular/router';
 import { UserService } from '../user/user.service';
@@ -28,8 +28,13 @@ export class PagePostComponent implements OnInit{
 
   other : any[] | null = null;
 
+  isLoggedIn: boolean = false;
+  loggedInUser$:any = this.store.select(state=> {
+    let loggedInAccount = ((state as any)['auth']).loggedInUser;
+    this.isLoggedIn = (loggedInAccount!=null);
+    console.log("page post logged inddddddddddddddddddd",this.isLoggedIn);
+  });
   constructor(
-    private http: HttpClient,
     private route: ActivatedRoute,
     private router: Router,
     private authService: UserService,
@@ -55,9 +60,10 @@ export class PagePostComponent implements OnInit{
       }
     }
 
-    let token = this.authService.getLoginToken();
+    let isLoggedIn = this.authService.getLoggedUser()!=null;
     console.log("POST ID",this.postId);
-    this.http.post('http://localhost:3000/loadFullPost',{token,id:this.postId}).subscribe((response: any) => {
+  
+    this.authService.reqPost('/loadFullPost',{id:this.postId}).subscribe((response: any) => {
         console.log("POST LOAD RESPONSE",response);
         if(response){
           this.post = response.post;
@@ -68,9 +74,8 @@ export class PagePostComponent implements OnInit{
     });
 
 
-    if(token){
-    this.http.post('http://localhost:3000/allFollowingMe',{token}).subscribe(
-      (response: any) => {
+    if(isLoggedIn){
+      this.authService.reqPost('/allFollowingMe',{}).subscribe((response: any) => {
         console.log("All following me",response);
         if(response!=null){
           this.other = response.map((f:any)=>f.to);
@@ -81,9 +86,8 @@ export class PagePostComponent implements OnInit{
   }
 
   submitComment(text:string){
-    let token = this.authService.getLoginToken();
-    if(token){
-      this.http.post('http://localhost:3000/uploadComment',{token,comment:{text:text},toId:this.postId,isPost:true}).subscribe(
+    if(this.authService.getLoggedUser()!=null){
+      this.authService.reqPost('/uploadComment',{comment:{text:text},toId:this.postId,isPost:true}).subscribe(
         (response: any) => {
           console.log("Comment response",response);
           if(response!=null){

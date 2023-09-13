@@ -6,7 +6,7 @@
         
         <app-post [inputPost]="post" [index]="0"></app-post>
         
-        <app-comment-creator class="mainComCreator" [cancelable]="false" (onSubmit)="submitComment($event)"></app-comment-creator>
+        <app-comment-creator [isLoggedIn]="isLoggedIn" class="mainComCreator" [cancelable]="false" (onSubmit)="submitComment($event)"></app-comment-creator>
 
         <hr class="py-2">
 
@@ -23,3 +23,4 @@
           </div>
       </div> 
     </div>
+    <a href="{{(loggedInUser$|async)}}"></a>

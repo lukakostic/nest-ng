@@ -26,6 +26,7 @@ export class LoginComponent {
     }
 
   onLogin() {
+    console.log("on login");
     this.store.dispatch(loginRequest({username:this.username,password:this.password,redirect:true}));
     /*
     this.authService.login(this.username, this.password).subscribe(user => {

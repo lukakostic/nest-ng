@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, UseGuards } from '@nestjs/common';
 import { PostM } from '../_entities/post.entity';
 import { User } from '../_entities/user.entity';
 import { Upvote } from '../_entities/upvote.entity';
@@ -12,6 +12,7 @@ import { CommentServices } from '../comments/comments.services';
 
 import { UserReq,Usr } from '../app.controller';
 import { CommentController } from 'src/comments/comments.controller';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller()
 export class PostController {
@@ -68,6 +69,8 @@ export class PostController {
     }
     return posts;
   }
+
+  @UseGuards(JwtAuthGuard)
   @Post("uploadPost")
   async uploadPost(@Body() r: UserReq<{ post: Partial<PostM> }>): Promise<PostM|null> {
     console.log("UPLOAD POST",r);
@@ -82,6 +85,8 @@ export class PostController {
     p['voteCount'] = 0;
     return p;
   }
+
+  @UseGuards(JwtAuthGuard)
   @Post("feed")
   async feed(@Body() r: UserReq<{}>): Promise<PostM[]|null> {
     let usr = await this.usersServices.loginToken(r.token);

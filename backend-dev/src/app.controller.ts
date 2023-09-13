@@ -10,6 +10,7 @@ import { PostServices } from './posts/posts.services';
 import { VoteServices } from './votes/votes.services';
 import { CommentServices } from './comments/comments.services';
 import { UserController } from './users/users.controller';
+import { AuthService } from './auth/auth.service';
 
 /* type which contains token:string property, as well as any other properties passed */
 export type UserReq<T> = T & { token: string };
@@ -32,12 +33,13 @@ export class AppController {
     private readonly postsServices: PostServices,
     private readonly voteServices: VoteServices,
     private readonly commentServices: CommentServices,
+    private readonly authServices: AuthService
     
   ) { }
 
   @Get("testUsers/:n")
   async makeTestUsers(@Param('n') n:number) {
-    let cont = new UserController(this.usersServices);
+    let cont = new UserController(this.usersServices, this.authServices);
     let userCount = await User.count();
     for(let i=0;i<n;i++){
       let u = "user"+(userCount+1+i)+"-"+(Math.random()*10).toString().replace(".","").substring(0,3);
@@ -50,7 +52,7 @@ export class AppController {
   }
   @Get("testFollows/:n")
   async makeTestFollows(@Param('n') n:number) {
-    let cont = new UserController(this.usersServices);
+    let cont = new UserController(this.usersServices,this.authServices);
     let allUsers = await User.find();
     for(let i=0;i<n;i++){
       //pick two random users

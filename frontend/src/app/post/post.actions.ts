@@ -3,7 +3,7 @@ import { Post } from './post.model';
 
 export const createPosts = createAction(
     '[Post] Create Post',
-    props<{ token:string|null, post: Partial<Post> }>()
+    props<{ post: Partial<Post> }>()
   );
 export const createPostsS = createAction(
     '[Post] Create Post Success',
@@ -18,12 +18,11 @@ export const clearPostCache = createAction(
   '[Post] Clear Post Cache'
 );
 export const loadFeed = createAction(
-  '[Post] Load Feed',
-  props<{ token: string|null }>()
+  '[Post] Load Feed'
 );
 export const loadPosts = createAction(
   '[Post] Load Posts',
-  props<{ token:string|null, id:string|null }>()
+  props<{ id:string|null }>()
 );
 export const loadPostsS = createAction(
   '[Post] Load Posts Success',

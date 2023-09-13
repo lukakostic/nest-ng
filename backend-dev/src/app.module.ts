@@ -16,6 +16,8 @@ import { CommentServices } from './comments/comments.services';
 
 //import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
+import { AuthService } from './auth/auth.service';
+import { JwtService } from '@nestjs/jwt';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
@@ -41,6 +43,8 @@ import { AuthModule } from './auth/auth.module';
     PostServices,
     VoteServices,
     CommentServices,
+    AuthService,
+    JwtService
   ],
 })
 export class AppModule {}

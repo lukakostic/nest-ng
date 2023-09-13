@@ -1,4 +1,5 @@
 
+<a href="{{(loggedInUser$|async)}}"></a>
 <div class="post card mb-3" [routerLink]="['/post']" [queryParams]="{id:post?.id}" style="cursor: pointer;" [class.mypost]="isMyPost">
   <div class="card-header .postTitleTitle d-flex justify-content-between" style="height: 24px; padding-top: 1px; border-bottom-color: rgb(110, 110, 110);">
     <span style="color: rgb(181, 181, 255);" [routerLink]="['/user']" [queryParams]="{id: post?.user?.id}">@{{ post?.user?.username }}</span>

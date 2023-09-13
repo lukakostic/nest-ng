@@ -84,10 +84,9 @@ export class CreatorComponent implements OnInit,OnDestroy {
     
     this.postForm.reset();
     this.images = [];
-    let token = this.authService.getLoginToken();
-    if(token==null) return;
+    if(this.authService.getLoggedUser()==null) return;
     console.log("UPLOAD POST",post);
-    this.store.dispatch(PostActions.createPosts({token, post: post}));
+    this.store.dispatch(PostActions.createPosts({post: post}));
   }
 
   onAddedPost(){

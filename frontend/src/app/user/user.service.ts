@@ -1,12 +1,12 @@
 
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { take, tap } from 'rxjs/operators';
 import { UserRegData } from '../page-login/register/register.component';
 import { Observable, map } from 'rxjs';
 import { User } from './user.model';
 import { Store } from '@ngrx/store';
 import { AuthEffects,State, loginRequest, loginS } from './auth.actions';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
@@ -17,6 +17,24 @@ export class UserService {
   constructor(private http: HttpClient,
     private store: Store<State>,
     ) {}
+
+  reqPost(path:string,obj:any){
+    let token = this.getLoginToken() ?? "";
+    var reqHeader = new HttpHeaders({ 
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + token
+   });
+    return this.http.post(this.apiUrl + path,Object.assign(obj,{token}),{headers:reqHeader});
+  }
+  reqGet(path:string){
+    let token = this.getLoginToken() ?? "";
+    var reqHeader = new HttpHeaders({ 
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + token
+    });
+    return this.http.get(this.apiUrl + path,{headers:reqHeader});
+  }
+  
 
   login(username: string, password: string) {
     return this.http.post(this.apiUrl + '/login', { username, password }).pipe(
@@ -35,8 +53,11 @@ export class UserService {
     );
   }
 
-  getLoginToken() {
+  private getLoginToken() {
     return localStorage.getItem('token');
+  }
+  hasLoginToken() {
+    return this.getLoginToken() != null;
   }
 
   logout() {
@@ -52,21 +73,24 @@ export class UserService {
   }
   //continue resto
   getUserById(id: string){// : Observable<User> {
-    return this.http.post(this.apiUrl + '/userById',id);
+    return this.reqPost('/userById',{id:id});
   }
-  loginAll(obj:{ username?:string, password?:string, token?:string }){
+  /*
+  private loginAll(obj:{ username?:string, password?:string, token?:string }){
     if(obj.token){
       console.log("Logging in by token ",obj.token);
-      return this.loginByToken(obj.token);
+      return this.loginByToken();
     }else if(obj.username && obj.password){
       console.log("Logging in by user and pass ",obj.username,obj.password);
       return this.login2(obj);
     }
     throw new Error("Invalid loginAll");
   }
-  loginByToken(token: string){// Observable<User>|null {
-    return this.http.post(this.apiUrl + '/loginByToken',{token});
+  */
+  loginByToken(){// Observable<User>|null {
+    return this.reqPost('/loginByToken',{});
   } 
+  
   login2(userPw : Partial<User>){// Observable<{user:User,token:string}>|null {
     return this.http.post(this.apiUrl + '/login',userPw);
   }

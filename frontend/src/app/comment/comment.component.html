@@ -1,4 +1,4 @@
-<div class="card">
+<div class="card" [class.mypost]="isMyPost">
     <div class="card-header .postTitleTitle d-flex justify-content-between" style="height: 24px; padding-top: 1px; border-bottom-color: rgb(110, 110, 110);">
         <!-- *ngIf="(replies?.length ?? 0)>0" -->
         <button  class="btn clpsBtn" [ngClass]="{'btn-outline-secondary': !collapsed}" (click)="expandCom()">
@@ -15,7 +15,7 @@
       </div>
     <div class="card-body comBdy">
         
-        <p class="card-text">{{ comment.text }}</p>
+        <p class="card-text" style="white-space: pre-wrap;">{{ comment.text }}</p>
         <button *ngIf="isLoggedIn" class="btn btn-outline-secondary mt-2 replyBtn" (click)="toggleReply()">Reply</button>
 
         
@@ -39,6 +39,7 @@
 <div *ngIf="showReplyBox" style="margin-top: -20px; margin-bottom: 30px;">
     <app-comment-creator 
         class="mt-2" 
+        [isLoggedIn]="isLoggedIn"
         [cancelable]="true" 
         (onSubmit)="addReply($event)" 
         (onCancel)="cancelReply()">
@@ -48,3 +49,4 @@
 <div *ngIf="!collapsed && comment!.replies && comment!.replies!.length>0" style="padding-left: 10px; border-left: 1px solid darkgray;">
 <app-comment *ngFor="let c of comment!.replies let i = index" [comment]="(comment!.replies!)[i]" [postId]="comment!.id!"></app-comment>
 </div>
+<a href="{{(loggedInUser$|async)}}"></a>

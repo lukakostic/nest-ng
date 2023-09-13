@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body } from '@nestjs/common';
+import { Controller, Get, Post, Body, UseGuards } from '@nestjs/common';
 import { PostM } from '../_entities/post.entity';
 import { User } from '../_entities/user.entity';
 import { Upvote } from '../_entities/upvote.entity';
@@ -11,6 +11,7 @@ import { VoteServices } from '../votes/votes.services';
 import { CommentServices } from '../comments/comments.services';
 
 import { UserReq, Usr } from '../app.controller';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller()
 export class VoteController {
@@ -18,18 +19,22 @@ export class VoteController {
         private readonly usersServices: UserServices,
         private readonly voteServices: VoteServices,
     ) { }
+
+    @UseGuards(JwtAuthGuard)
     @Post("votePost")
     async votePost(@Body() r: UserReq<{ postId: string, positive: boolean }>): Promise<Upvote> {
         let usr = await this.usersServices.loginToken(r.token);
         if (usr == null) return null;
         return this.voteServices.votePost(usr.id, r.postId, r.positive);
     }
+    @UseGuards(JwtAuthGuard)
     @Post("unvote")
     async unvote(@Body() r: UserReq<{ postId: string }>): Promise<true|null> {
         let usr = await this.usersServices.loginToken(r.token);
         if (usr == null) return null;
         return this.voteServices.unvote(usr.id, r.postId);
     }
+    @UseGuards(JwtAuthGuard)
     @Post("voteComment")
     async voteComment(@Body() r: UserReq<{ commentId: string, positive: boolean }>): Promise<Upvote> {
         let usr = await this.usersServices.loginToken(r.token);

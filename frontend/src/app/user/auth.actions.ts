@@ -7,7 +7,11 @@ export type UserToken = { token:string|null, user:User|null };
 
 export const loginRequest = createAction(
   '[Auth] Login Request',
-  props<{ username?:string, password?:string, token?:string,redirect:boolean }>()
+  props<{ username:string, password:string,redirect:boolean }>()
+);
+export const loginTokRequest = createAction(
+  '[Auth] LoginByToken Request',
+  props<{ redirect:boolean }>()
 );
 export const registerRequest = createAction(
   '[Auth] Register Request',
@@ -38,22 +42,6 @@ export const loginE = createAction(
   //import { User } from './user.model';\
   import { UserService } from './user.service';
 
-  /*
-  @Injectable({
-    providedIn: 'root',
-  })
-  export class PostService {
-      constructor(
-        private http: HttpClient
-      ) {}
-      getPosts(){
-        return this.http.get<User[]>('http://localhost:3000/posts')
-      }
-      uploadPost(post:Partial<Post>){
-        return this.http.put<Post>('http://localhost:3000/uploadPost',post)
-      }
-  }
-  */
 
 @Injectable()
 export class AuthEffects {
@@ -66,7 +54,7 @@ export class AuthEffects {
   
   loginReq$ = createEffect(() => this.actions$.pipe(
     ofType(loginRequest),//PostActions.loadPosts),
-    mergeMap((action) => this.authService.loginAll(action as any)
+    mergeMap((action) => this.authService.login(action.username, action.password)
       .pipe(
         map((res:any)  => {
             console.log("login request res",res);
@@ -79,6 +67,22 @@ export class AuthEffects {
       ))
     )
     );
+  
+    loginTokReq$ = createEffect(() => this.actions$.pipe(
+      ofType(loginTokRequest),//PostActions.loadPosts),
+      mergeMap((action) => this.authService.loginByToken()
+        .pipe(
+          map((res:any)  => {
+              console.log("login tok request res",res);
+              if(res == null || res?.token==null) return loginE({error:"Login error"});
+              this.authService.loggedIn(res!.user, res!.token);
+              return loginS(res);
+              //return PostActions.loadPostsS({ posts })
+          }),
+          catchError(() => EMPTY)
+        ))
+      )
+      );
 
   registerReq$ = createEffect(() => this.actions$.pipe(
     ofType(registerRequest),//PostActions.createPosts),
@@ -96,27 +100,6 @@ export class AuthEffects {
       ))
     )
   );
-/*
-  uploadedPost$ = createEffect(() => this.actions$.pipe(
-    ofType(PostActions.createPostsS),
-    //get uploaded post from store and console log it
-    map(action => { 
-      console.log("Uploaded post",action.post);
-      return action.post
-    })
-  ),{dispatch:false});
-*/
-    /*
-  loadPosts$ = createEffect(() => this.actions$.pipe(
-    ofType(PostActions.loadPosts),
-    mergeMap(() => this.http.get<Post[]>('http://localhost:3000/posts')
-      .pipe(
-        map(posts => PostActions.loadPostsS({ posts })),
-        catchError(() => EMPTY)
-      ))
-    )
-  );*/
-
 }
 
 import { Action, createReducer, on } from '@ngrx/store';
@@ -142,6 +125,12 @@ export const authReducer = createReducer(
   initialState,
   on(loginRequest, (state, action) => {
     console.log("login req new",action);
+    return {
+    ...state,
+    redirectOnLogin: action.redirect,
+  }}),
+  on(loginTokRequest, (state, action) => {
+    console.log("loginTok req new",action);
     return {
     ...state,
     redirectOnLogin: action.redirect,

@@ -18,16 +18,18 @@ import * as PostActions from '../post/post.actions';
 })
 export class PageMainComponent implements OnInit {
   mode = -1;  // 0 = feed, 1 = my posts, 2 = all posts, 3 = viewing profile, 4 = post
-  loggedIn: boolean = false;
-  loggedInAccount : User|null = null;
+
   
   loadedProfile : User|null = null;
 
   @ViewChild('matMenuTrigger') profileMenu: MatMenuTrigger;
 
+  loggedIn: boolean = false;
+  loggedInAccount : User|null = null;
   loggedInUser$: Observable<User|null> = this.store.select(state=> {
     
     this.loggedInAccount = ((state as any)['auth']).loggedInUser;
+    console.log("logged in account", this.loggedInAccount)
     let li = !!(this.loggedInAccount);
     if(li && this.loggedIn==false) this.calcRoute();
     this.loggedIn=li;

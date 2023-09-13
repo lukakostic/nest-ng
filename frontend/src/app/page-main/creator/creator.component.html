@@ -12,8 +12,8 @@
           <button class="btn btn-secondary" type="button" (click)="onAddImage()">Add Image</button>
         </div>
         <div *ngFor="let image of images; let i = index" class="mt-2 d-flex justify-content-between align-items-center">
-          <a [href]="image" style="color:white; text-decoration: none; overflow: hidden; overflow-wrap: normal; text-overflow: ellipsis; padding-right: 10px;">{{ image }}</a>
-          <button class="btn btn-danger btn-sm" type="button" (click)="onRemoveImage(i)">Remove Image</button>
+          <a [href]="image" style="color:white; text-decoration: none; white-space: nowrap; overflow: hidden; overflow-wrap: normal; text-overflow: ellipsis; padding-right: 10px;">{{ image }}</a>
+          <button class="btn btn-danger btn-sm" style="white-space: nowrap;" type="button" (click)="onRemoveImage(i)">Remove Image</button>
         </div>
       </div>
       <button type="submit" class="btn" [ngClass]="{'btn-primary': (!postForm.invalid), 'btn-secondary': (postForm.invalid)}" style="border-radius: 19px; padding:7px; font-weight: bold;" [disabled]="postForm.invalid">&nbsp; &nbsp; &nbsp; &nbsp; Post &nbsp; &nbsp; &nbsp; &nbsp;</button>

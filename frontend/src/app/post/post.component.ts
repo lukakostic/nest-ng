@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
 import { Post } from '../post/post.model';
-import { HttpClient } from '@angular/common/http';
 import { UserService } from '../user/user.service';
 import { Store } from '@ngrx/store';
 import { State } from '../user/auth.actions';
@@ -18,11 +17,17 @@ export class PostComponent implements OnInit,OnChanges {
   @Input() index: number = -1;
   votesWithoutUser = 0;
 
-  isLoggedIn = false;
+
+  isLoggedIn: boolean = false;
   isMyPost = false;
+  loggedInUser$:any = this.store.select(state=> {
+    let loggedInAccount = ((state as any)['auth']).loggedInUser;
+    this.isLoggedIn = (loggedInAccount!=null);
+    if(this.post!=null && this.post.user!=null && loggedInAccount!=null)
+      this.isMyPost = loggedInAccount.id == this.post.user?.id;
+  });
 
   constructor(
-    private http: HttpClient,
     private authService: UserService,
     private store: Store<State>,
       ) {}
@@ -100,8 +105,7 @@ export class PostComponent implements OnInit,OnChanges {
     let ov = this.votesWithoutUser;
     this.post.userVote = {positive};
     this.post.voteCount = ov+(positive?1:-1);
-    this.http.post('http://localhost:3000/votePost',{token:this.authService.getLoginToken(),postId:this.post.id,positive}).subscribe(
-      (response: any) => {
+    this.authService.reqPost('/votePost',{postId:this.post.id,positive}).subscribe((response: any) => {
         console.log("USER VOTE",response);
         if(response){
           this.post!.userVote = response;
@@ -123,8 +127,7 @@ export class PostComponent implements OnInit,OnChanges {
     let oldVote = this.post.userVote?{...this.post.userVote}:null;
     this.post.userVote = null;
     this.post.voteCount = ov;
-  this.http.post('http://localhost:3000/unvote',{token:this.authService.getLoginToken(),postId:this.post.id}).subscribe(
-      (response: any) => {
+    this.authService.reqPost('/unvote',{postId:this.post.id}).subscribe((response: any) => {
         console.log("USER unVOTE",response);
         if(response==true){
           if(this.post!.userVote){

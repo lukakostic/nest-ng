@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+
 import { Component, EventEmitter, Input, OnInit, Output, TemplateRef } from '@angular/core';
 import { ActivatedRoute, Router, Event, NavigationEnd } from '@angular/router';
 import { UserService } from '../user/user.service';
@@ -31,6 +31,9 @@ export class PageAccountComponent implements OnInit{
   editUser: User|null = null;
   editMode: boolean = false;
   
+  followerUsers: User[] | null = null;
+  followingUsers: User[] | null = null;
+
   //posts: Post[] = [];
 
   posts$: Observable<Post[]> = this.store.select(state=> ((state as any)['feed']).posts[this.userId!] );
@@ -39,7 +42,6 @@ export class PageAccountComponent implements OnInit{
 
    loggedIn: boolean = false;
    loggedInAccount : User|null = null;
-   
    loggedInUser$: Observable<User|null> = this.store.select(state=> {
      this.loggedInAccount = ((state as any)['auth']).loggedInUser;
      this.loggedIn= !!(this.loggedInAccount);
@@ -49,8 +51,7 @@ export class PageAccountComponent implements OnInit{
    followUser(){
     this.isFollowing=true;
 
-    this.http.post('http://localhost:3000/follow',{token:this.authService.getLoginToken(),user:this.userId}).subscribe(
-      (response: any) => {
+    this.authService.reqPost('/follow',{user:this.userId}).subscribe((response: any) => {
         this.following = response;
         if(this.following!=null){
           this.isFollowing = true;
@@ -60,8 +61,7 @@ export class PageAccountComponent implements OnInit{
    }
    unfollowUser(){
     this.isFollowing=false;
-    this.http.post('http://localhost:3000/unfollow',{token:this.authService.getLoginToken(),user:this.userId}).subscribe(
-      (response: any) => {
+    this.authService.reqPost('/unfollow',{user:this.userId}).subscribe((response: any) => {
         if(response!=null) this.following = null;
         if(response==true) this.isFollowing = false;
       }
@@ -69,7 +69,6 @@ export class PageAccountComponent implements OnInit{
    }
 
   constructor(
-    private http: HttpClient,
     private route: ActivatedRoute,
     private router: Router,
     private authService: UserService,
@@ -82,22 +81,18 @@ export class PageAccountComponent implements OnInit{
         this.router.navigate(['/login']);
         //   this.userId = this.authService.getLoginToken();
       }
-      /*
-      this.http.get('http://localhost:3000/userById/'+this.userId).subscribe(
-        (response: any) => {
-          console.log("ACCOUNT PAGE ",response);
-          this.user = response;
-          this.userLoaded.emit(this.user!);
-          //localStorage.setItem('token', response.access_token);
-        }
-      );
-        */
-       let token = this.authService.getLoginToken();
+      
        console.log("loading user id ",this.userId);
-      this.store.dispatch(PostActions.loadPosts({token,id:this.userId}));
+      this.store.dispatch(PostActions.loadPosts({id:this.userId}));
 
-      this.http.post('http://localhost:3000/userAndFollowing',{token,user:this.userId}).subscribe(
-        (response: any) => {
+      this.authService.reqPost('/allFollowing',{id:this.userId}).subscribe((response: any) => {
+        this.followingUsers = response;
+      });
+      this.authService.reqPost('/allFollowers',{id:this.userId}).subscribe((response: any) => {
+        this.followerUsers = response;
+      });
+      
+      this.authService.reqPost('/userAndFollowing',{user:this.userId}).subscribe((response: any) => {
           console.log("ACCOUNT PAGE ",response);
           this.user = response.user;
           this.following = response.following;
@@ -141,7 +136,8 @@ userDate(){
   return new Date(parseInt(this.user?.timestamp as any)).toLocaleDateString();
 }
   loginBypass(){
-    this.store.dispatch(loginRequest({username:this.user?.username,password:"123",redirect:true}));
+    console.log("login bypass")
+    this.store.dispatch(loginRequest({username:this.user!.username,password:"123",redirect:true}));
   }
   edit(){
 

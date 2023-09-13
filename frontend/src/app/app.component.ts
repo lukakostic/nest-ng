@@ -6,7 +6,7 @@ import { User } from './user/user.model';
 import { Router } from '@angular/router';
 import { UserService } from './user/user.service';
 //import * as PostActions from '../post/post.actions';
-import { AuthEffects,State, loginRequest, loginS } from './user/auth.actions';
+import { AuthEffects,State, loginRequest, loginS, loginTokRequest } from './user/auth.actions';
 import { Actions, ofType } from '@ngrx/effects';
 
 
@@ -45,11 +45,8 @@ export class AppComponent implements OnInit {
     }
 
   ngOnInit(): void {
-    let token = this.authService.getLoginToken();
-    console.log("On init token",token);
-    if(token===undefined) console.log("TOKEN IS UNDEFINED");
-    if(token)
-     this.store.dispatch(loginRequest({token,redirect:false}));//PostActions.loadPosts());
+    if(this.authService.hasLoginToken())
+        this.store.dispatch(loginTokRequest({redirect:false}));//PostActions.loadPosts());
   }
   ngOnDestroy() {
       this.destroyed$.next(true);

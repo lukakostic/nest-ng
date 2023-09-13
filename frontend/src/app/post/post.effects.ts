@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { EMPTY } from 'rxjs';
+import { EMPTY, Observable } from 'rxjs';
 import { map,exhaustMap, mergeMap, catchError } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import * as PostActions from './post.actions';
@@ -12,21 +12,21 @@ import { UserService } from '../user/user.service';
 })
 export class PostService {
     constructor(
-      private http: HttpClient
+      private http: HttpClient,
+      private authService: UserService
     ) {}
-    getFeed(token:string){
-      return this.http.post<Post[]>('http://localhost:3000/feed',{token})
+    getFeed(){
+      return this.authService.reqPost('/feed',{}) as Observable<Post[]>;
     }
-    getAllPosts(token:string|null){
-      console.log("get all posts",token);
-      return this.http.post<Post[]>('http://localhost:3000/allPosts',{token})
+    getAllPosts(){
+      return this.authService.reqPost('/allPosts',{}) as Observable<Post[]>;
     }
-    getPosts(token:string|null,userId:string){
-      console.log("getPosts",token,userId);
-      return this.http.post<Post[]>('http://localhost:3000/postsByUser',{token,id:userId})
+    getPosts(userId:string){
+      console.log("getPosts",userId);
+      return this.authService.reqPost('/postsByUser',{id:userId}) as Observable<Post[]>;
     }
-    uploadPost(r:{token:string,post:Partial<Post>}){
-      return this.http.post<Post>('http://localhost:3000/uploadPost',r)
+    uploadPost(r:{post:Partial<Post>}){
+      return this.authService.reqPost('/uploadPost',{...r}) as Observable<Post>;
     }
 }
 
@@ -44,10 +44,9 @@ export class PostEffects {
   loadFeed$ = createEffect(() => this.actions$.pipe(
     ofType(PostActions.loadFeed),
     mergeMap((s) =>{ 
-      let tok = this.authService.getLoginToken();
-      if(tok==null) return [PostActions.loadPostsE({error:'Not logged in'})];
-      console.log("get feed token:",tok);
-      return this.postService.getFeed(tok).pipe(
+      if(this.authService.getLoggedUser()==null) return [PostActions.loadPostsE({error:'Not logged in'})];
+      
+      return this.postService.getFeed().pipe(
         map(posts => {
           console.log("LOADED FEED",posts);
           if(posts==null) return PostActions.loadPostsE({error:'Not logged in / feed error'});
@@ -62,7 +61,7 @@ export class PostEffects {
       ofType(PostActions.loadPosts),
       mergeMap((s) => {
         console.log("loadPosts$ start: ",s);
-      return (s.id? this.postService.getPosts(s.token,s.id) : this.postService.getAllPosts(s.token)).pipe(
+      return (s.id? this.postService.getPosts(s.id) : this.postService.getAllPosts()).pipe(
           map(posts => {
               console.log("loadPosts$",s.id,posts);
               return PostActions.loadPostsS({ posts,postsType:(s.id??'all') })

@@ -71,12 +71,7 @@ const routes: Routes = [
     FormsModule,
     HttpClientModule,
     ReactiveFormsModule,
-    StoreModule.forRoot({ 'feed': postReducer, 'auth': authReducer },
-    {runtimeChecks: {
-      strictStateImmutability: false,
-    }}
-    ),
-    //StoreModule.forRoot({}, {}),
+    StoreModule.forRoot({ 'feed': postReducer, 'auth': authReducer }),
     StoreRouterConnectingModule.forRoot(),
     EffectsModule.forRoot([PostEffects,AuthEffects]),
     BrowserAnimationsModule,

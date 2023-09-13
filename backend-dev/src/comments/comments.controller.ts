@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body } from '@nestjs/common';
+import { Controller, Get, Post, Body, UseGuards } from '@nestjs/common';
 import { PostM } from '../_entities/post.entity';
 import { User } from '../_entities/user.entity';
 import { Upvote } from '../_entities/upvote.entity';
@@ -11,6 +11,7 @@ import { VoteServices } from '../votes/votes.services';
 import { CommentServices } from '../comments/comments.services';
 
 import { UserReq,Usr } from '../app.controller';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller()
 export class CommentController {
@@ -18,7 +19,6 @@ export class CommentController {
     private readonly usersServices: UserServices,
     private readonly commentServices: CommentServices,
     private readonly voteServices: VoteServices
-    ,
   ) { }
   
   @Get("comments")
@@ -63,17 +63,9 @@ export class CommentController {
     c['replies'] = [];
     return c;
   }
-  /*
-  @Post("getCommentsByUserId")
-  getCommentsByUser(@Body() usr: Usr): Promise<CommentM[]|null> {
-    if(usr.id!==null)
-      return this.commentServices.getCommentsByUserId(usr.id);
-    else if(usr.username!==null)
-      return this.commentServices.getCommentsByUserUsername(usr.username);
-    else
-      return null;
-  }
-  */
+  
+
+  @UseGuards(JwtAuthGuard)
   @Post("uploadComment")
   async uploadComment(@Body() r: UserReq<{ comment: Partial<CommentM>, toId:string, isPost:boolean }>): Promise<CommentM> {
     let usr = await this.usersServices.loginToken(r.token);
@@ -85,6 +77,8 @@ export class CommentController {
     r.comment.replyType = r.isPost?"post":"comment";
     let c = await this.commentServices.insert(r.comment as CommentM);
     c.user = usr;
+    c['userVote'] = null;
+    c['voteCount'] = 0;
     return c;
   }
 }

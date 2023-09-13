@@ -1,9 +1,11 @@
 
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { CommentM } from './comment.model';
-import { HttpClient } from '@angular/common/http';
 import { UserService } from '../user/user.service';
 import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import { User } from '../user/user.model';
+import { State } from '../user/auth.actions';
 
 @Component({
   selector: 'app-comment',
@@ -19,13 +21,22 @@ export class CommentComponent implements OnInit{
     currentComment: any;
     */
     @Input() postId :string;
+
     isLoggedIn: boolean = false;
+    isMyPost = false;
+    loggedInUser$:any = this.store.select(state=> {
+      let loggedInAccount = ((state as any)['auth']).loggedInUser;
+      this.isLoggedIn = (loggedInAccount!=null);
+      if(this.comment!=null && this.comment.user!=null && loggedInAccount!=null)
+        this.isMyPost = loggedInAccount.id == this.comment.user?.id;
+    });
+  
+    
 
     collapsed: boolean = true;
 
     showReplyBox = false;
     reply : string|null = null;
-
 
     votesWithoutUser = 0;
     calcVotesWithoutUser(){
@@ -50,9 +61,8 @@ export class CommentComponent implements OnInit{
       let ov = this.votesWithoutUser;
       this.comment.userVote = {positive};
       this.comment.voteCount = ov+(positive?1:-1);
-      this.http.post('http://localhost:3000/voteComment',{token:this.authService.getLoginToken(),commentId:this.comment.id,positive}).subscribe(
-        (response: any) => {
-          console.log("USER VOTE",response);
+      this.authService.reqPost('/voteComment',{commentId:this.comment.id,positive}).subscribe((response: any) => {
+      console.log("USER VOTE",response);
           if(response){
             this.comment!.userVote = response;
             this.comment!.voteCount = ov+(this.comment!.userVote.positive?1:-1);
@@ -73,8 +83,7 @@ export class CommentComponent implements OnInit{
       let oldVote = this.comment.userVote?{...this.comment.userVote}:null;
       this.comment.userVote = null;
       this.comment.voteCount = ov;
-    this.http.post('http://localhost:3000/unvote',{token:this.authService.getLoginToken(),postId:this.comment.id}).subscribe(
-        (response: any) => {
+      this.authService.reqPost('/unvoteComment',{commentId:this.comment.id}).subscribe((response: any) => {
           console.log("USER unVOTE",response);
           if(response==true){
             if(this.comment!.userVote){
@@ -106,7 +115,7 @@ export class CommentComponent implements OnInit{
       this.sendVote(false);
     }
   constructor(
-    private http: HttpClient,
+    private store : Store<State>,
     private authService: UserService,
     //private store: Store<State>,
       ) {}
@@ -114,6 +123,8 @@ export class CommentComponent implements OnInit{
    ngOnInit(): void {
      this.isLoggedIn = this.authService.getLoggedUser()!=null;
      this.calcVotesWithoutUser();
+     if(this.comment!=null && this.comment.user!=null && this.isLoggedIn)
+      this.isMyPost = this.authService.getLoggedUser()?.id == this.comment.user?.id;
    }
 
   toggleReply(){
@@ -121,7 +132,6 @@ export class CommentComponent implements OnInit{
   }
   
 
-    //expandCom(comment: any, newState: any = undefined, onDoneCB: any = undefined) {
     expandCom(newState = undefined as any){
       newState ??= !this.collapsed;
       this.collapsed = newState;
@@ -134,10 +144,7 @@ export class CommentComponent implements OnInit{
         */
         if (!this.collapsed) {
             console.log('Loading replies of', this.comment);
-            let token = this.authService.getLoginToken();
-        
-            this.http.post('http://localhost:3000/loadCommentsPost',{token,postId:this.comment.id,depth:1}).subscribe(
-            (response: any) => {
+            this.authService.reqPost('/loadCommentsPost',{postId:this.comment.id,depth:1}).subscribe((response: any) => {
               console.log("Comment reply response",response);
               if(response!=null){
                 //this.comments = response;
@@ -146,8 +153,6 @@ export class CommentComponent implements OnInit{
             }
           );
         
-            
-            // Req is a custom function not defined in the provided code, so I cannot convert it to Angular
         }
     }
 
@@ -155,11 +160,10 @@ export class CommentComponent implements OnInit{
         console.log('REPLYING TO COM', text);
         this.showReplyBox = false;
         
-        let token = this.authService.getLoginToken();
-        if(token){
-          this.http.post('http://localhost:3000/uploadComment',{token,comment:{text:text},toId:this.comment.id,isPost:false}).subscribe(
-            (response: any) => {
-              console.log("Comment reply response",response);
+        
+        if(this.authService.getLoggedUser()!=null){
+          this.authService.reqPost('/uploadComment',{comment:{text:text},toId:this.comment.id,isPost:false}).subscribe((response: any) => {
+            console.log("Comment reply response",response);
               
               if(response!=null){
                 //this.comments = response;
@@ -169,7 +173,6 @@ export class CommentComponent implements OnInit{
             }
           );
         }
-        // Req is a custom function not defined in the provided code, so I cannot convert it to Angular
     }
 
     getDate(){

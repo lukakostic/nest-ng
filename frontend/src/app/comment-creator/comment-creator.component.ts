@@ -6,25 +6,19 @@ import { UserService } from '../user/user.service';
   templateUrl: './comment-creator.component.html',
   styleUrls: ['./comment-creator.component.scss']
 })
-export class CommentCreatorComponent implements OnInit{
+export class CommentCreatorComponent {
   @Output() onSubmit = new EventEmitter<string>();
   @Output() onCancel = new EventEmitter<boolean>();
   
   @Input() cancelable = true;
+  @Input() isLoggedIn: boolean;
 
   text:string = "";
 
-  isLoggedIn = false;
-
   constructor(
     private authService: UserService
-  ){
-    
-  }
+  ){}
 
-  ngOnInit(): void {
-    this.isLoggedIn = this.authService.getLoggedUser()!=null;
-  }
   cancel(){
     if(this.cancelable)
       this.onCancel.emit(true);

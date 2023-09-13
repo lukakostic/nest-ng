@@ -53,14 +53,6 @@ export class UserServices {
       (await User.findOne({where: {email: obj.email}}))!==null
     );
   }
-  async validateUsernamePw(username: string, password: string): Promise<User|null> {
-    const user = await User.findOne({where: {username: username}});
-    console.log("validate username pw",user);
-    console.log({username,password})
-    if(user===null) return null;
-    if(await bcrypt.compare(password,user.password)) return user;
-    return null;
-  }
   async deleteUser(userId: string): Promise<void> {
     await User.delete({id: userId});
   }
