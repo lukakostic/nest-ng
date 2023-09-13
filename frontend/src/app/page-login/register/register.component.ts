@@ -1,10 +1,10 @@
 import { Component, OnInit, OnChanges, Input } from '@angular/core';
-import { AuthService } from '../../auth/auth.service';
+import { UserService } from '../../user/user.service';
 import { Store } from '@ngrx/store';
 import { Observable,map,tap } from 'rxjs';
-import { User } from '../../auth/user.model';
+import { User } from '../../user/user.model';
 //import * as PostActions from '../post/post.actions';
-import { AuthEffects,State, loginRequest, registerRequest } from '../../auth/auth.actions';
+import { AuthEffects,State, loginRequest, registerRequest } from '../../user/auth.actions';
 
 //import * as PostActions from '../post/post.actions';
 //import { AuthEffects, State } from '../../auth/auth.actions';
@@ -30,7 +30,7 @@ export class RegisterComponent {
   registered: boolean = false;
 
 
-  constructor(private authService: AuthService,
+  constructor(private authService: UserService,
     private store: Store<State>) {}
 
 

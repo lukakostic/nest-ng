@@ -1,12 +1,13 @@
 
-<div class="col-md-6 col-sm-12 p-3 order-3 order-md-2" >
+<div class="col-md-6 col-sm-12 p-3 order-3 order-md-2">
     <ng-container [ngTemplateOutlet]="head"></ng-container>
-  <div>
+  <div  class="px-4" style="margin-top: -10px; max-width: 550px; margin-left: auto; margin-right: auto;">
+    <div>
 <h1 style="color: white;">
     <span style="float: left;">{{user?.username}}</span>
       &nbsp;
       <mat-menu #menu="matMenu" yPosition="below">
-        <button mat-menu-item (click)="edit()" >
+        <button *ngIf="user?.id == loggedInAccount?.id" mat-menu-item (click)="edit()" >
             <mat-icon>edit</mat-icon> <span>Edit</span>
         </button>
         <button mat-menu-item (click)="getUrl()" >
@@ -27,13 +28,21 @@
         <span *ngIf="user && user.description.length>0">{{user?.description}}</span>
         <span *ngIf="user==null || user.description.length==0" style="color:grey;"> No description. </span>
     </div>
-  <hr style="border-color: white;">
+    <div style="height: 30px;">
+        <button class="px-5 btn btn-outline-primary" style="color:rgb(255, 255, 255); border-width: 2px;" *ngIf="loggedIn && user?.id != loggedInAccount?.id && !isFollowing" (click)="followUser()">Follow</button>
+        <button class="px-5 btn btn-outline-danger" style="color:rgb(255, 204, 204);" *ngIf="loggedIn && user?.id != loggedInAccount?.id && isFollowing" (click)="unfollowUser()">Unfollow</button>
+        <h3 style="display: inline-block; color: lightgrey; float:right; margin-top: 5px; margin-right: 2%;">Followers:XXX &nbsp;&nbsp;&nbsp; Following:XXX</h3>
+    </div>
+</div>
+    <hr style="border-color: white;margin-top: 30px;">
 
 <div class="Xcontainer mt-4">
     
     <!-- <app-post *ngFor="let post of (posts$ | async) let i = index" [post]="post" [index]="i"></app-post> -->
-    <app-post *ngFor="let post of posts let i = index" [post]="post" [index]="i"></app-post>
-    <h1 *ngIf="posts.length==0" style="color: grey;">User has no posts</h1>
+    <ng-container *ngrxLet="posts$ as posts">
+        <app-post *ngFor="let post of posts let i = index" [inputPost]="posts[i]" [index]="i"></app-post>
+    </ng-container>
+    <h1 *ngIf="(posts$|async)?.length==0" style="color: grey; text-align: center;">User has no posts.</h1>
 </div>
 </div>
 <div class="col-md-3 col-sm-12 p-3 pt-5 order-2 order-md-3" style="color: white;">
@@ -48,3 +57,4 @@
   </div>
   -->
 </div>
+<a href="{{(loggedInUser$|async)}}"></a>

@@ -12,7 +12,7 @@
           <button class="btn btn-secondary" type="button" (click)="onAddImage()">Add Image</button>
         </div>
         <div *ngFor="let image of images; let i = index" class="mt-2 d-flex justify-content-between align-items-center">
-          <a [href]="image" style="color:white; text-decoration: none;">{{ image }}</a>
+          <a [href]="image" style="color:white; text-decoration: none; overflow: hidden; overflow-wrap: normal; text-overflow: ellipsis; padding-right: 10px;">{{ image }}</a>
           <button class="btn btn-danger btn-sm" type="button" (click)="onRemoveImage(i)">Remove Image</button>
         </div>
       </div>

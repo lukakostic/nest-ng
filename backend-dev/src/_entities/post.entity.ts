@@ -6,7 +6,7 @@ export class PostM extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
-  @ManyToOne(() => User, { nullable: false })
+  @ManyToOne(() => User, user => user.posts, { nullable: false })
   //@JoinColumn()
   public user!: User;
   

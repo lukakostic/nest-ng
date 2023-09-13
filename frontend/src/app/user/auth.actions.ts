@@ -36,7 +36,7 @@ export const loginE = createAction(
   import { HttpClient } from '@angular/common/http';
   //import * as PostActions from './post.actions';
   //import { User } from './user.model';\
-  import { AuthService } from './auth.service';
+  import { UserService } from './user.service';
 
   /*
   @Injectable({
@@ -60,13 +60,13 @@ export class AuthEffects {
 
   constructor(
     private actions$: Actions,
-    private authService: AuthService,
+    private authService: UserService,
     private http: HttpClient
   ) {}
   
   loginReq$ = createEffect(() => this.actions$.pipe(
     ofType(loginRequest),//PostActions.loadPosts),
-    exhaustMap((action) => this.authService.loginAll(action as any)
+    mergeMap((action) => this.authService.loginAll(action as any)
       .pipe(
         map((res:any)  => {
             console.log("login request res",res);
@@ -82,7 +82,7 @@ export class AuthEffects {
 
   registerReq$ = createEffect(() => this.actions$.pipe(
     ofType(registerRequest),//PostActions.createPosts),
-    exhaustMap((action) => this.authService.register2(action as any)
+    mergeMap((action) => this.authService.register2(action as any)
       .pipe(
         //map(res => loginS(res as any)), //PostActions.createPostsS({ post })),
         map((res:any) => {

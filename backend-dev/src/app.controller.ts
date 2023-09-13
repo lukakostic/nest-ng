@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param } from '@nestjs/common';
 import { PostM } from './_entities/post.entity';
 import { User } from './_entities/user.entity';
 import { Upvote } from './_entities/upvote.entity';
@@ -35,12 +35,12 @@ export class AppController {
     
   ) { }
 
-  @Get("testUsers")
-  async makeTestUsers() {
+  @Get("testUsers/:n")
+  async makeTestUsers(@Param('n') n:number) {
     let cont = new UserController(this.usersServices);
     let userCount = await User.count();
-    for(let i=0;i<10;i++){
-      let u = "user"+(userCount+1+i)+"-"+(Math.random()*10).toString().replace(".","").substring(0,4);
+    for(let i=0;i<n;i++){
+      let u = "user"+(userCount+1+i)+"-"+(Math.random()*10).toString().replace(".","").substring(0,3);
       await cont.register({
         username:u,
         email:u+"@gmail.com",
@@ -48,11 +48,11 @@ export class AppController {
       });
     }
   }
-  @Get("testFollows")
-  async makeTestFollows() {
+  @Get("testFollows/:n")
+  async makeTestFollows(@Param('n') n:number) {
     let cont = new UserController(this.usersServices);
     let allUsers = await User.find();
-    for(let i=0;i<1;i++){
+    for(let i=0;i<n;i++){
       //pick two random users
       let t1 = allUsers[Math.floor(Math.random()*allUsers.length)].id;
       let t2 = t1;

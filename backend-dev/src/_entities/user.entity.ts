@@ -1,5 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, Unique, BaseEntity, OneToMany } from 'typeorm';
 import { Following } from './following.entity';
+import { PostM } from './post.entity';
 @Entity()
 @Unique(['username', 'email']) // Ensure username and email are unique
 export class User  extends BaseEntity{
@@ -23,4 +24,11 @@ export class User  extends BaseEntity{
   
   @OneToMany(() => Following, (fol) => fol.from, { onDelete: 'CASCADE', cascade: true })
   following: Following[];
+  
+  @OneToMany(() => Following, (fol) => fol.to, { onDelete: 'CASCADE', cascade: true })
+  followers: Following[];
+
+  @OneToMany(() => PostM, (post) => post.user, { onDelete: 'CASCADE', cascade: true })
+  posts: PostM[];
+  
 }

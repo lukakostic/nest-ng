@@ -26,10 +26,16 @@ export class UserController {
 
 
   @Post("follow")
-  async follow(@Body() r: UserReq<{toFollow:string}>): Promise<Following> {
+  async follow(@Body() r: UserReq<{user:string}>): Promise<Following> {
     let usr = await this.usersServices.loginToken(r.token);
-    return this.usersServices.followUser(usr.id,r.toFollow);
+    return this.usersServices.followUser(usr.id,r.user);
   }
+  @Post("unfollow")
+  async unfollow(@Body() r: UserReq<{user:string}>): Promise<true|null> {
+    let usr = await this.usersServices.loginToken(r.token);
+    return this.usersServices.unfollowUser(usr.id,r.user);
+  }
+
   @Post("followId")
   async followId(@Body() r: {from:string,toFollow:string}): Promise<Following> {
     return this.usersServices.followUser(r.from,r.toFollow);
@@ -38,6 +44,13 @@ export class UserController {
   async allFollowing(@Param('id') id:string): Promise<Following[]> {
     //let usr = await this.usersServices.loginToken(r.token);
     return this.usersServices.getAllFollowing(id);
+  }
+  @Post("allFollowingMe")
+  async allFollowingMe(@Body() r: UserReq<{}>): Promise<Following[]> {
+    let usr = await this.usersServices.loginToken(r.token);
+    if(usr)
+      return this.usersServices.getAllFollowing(usr.id);
+      else return null;
   }
   @Get("allFollowers/:id")
   async allFollowers(@Param('id') id:string): Promise<Following[]> {
@@ -55,6 +68,16 @@ export class UserController {
     console.log("userById",id);
     return this.usersServices.getUserById(id);
     //return this.users.find(user=>user.id==id);
+  }
+
+  
+  @Post("userAndFollowing")
+  async userAndFollowing(@Body() r: UserReq<{user:string}>): Promise<{user:User,following:Following}|null> {
+    let usr2 = await this.usersServices.getUserById(r.user);
+    let usr = await this.usersServices.loginToken(r.token);
+    let following = null;
+    if(usr) following = await this.usersServices.isUserFollowing(usr.id,usr2.id);
+    return {user:usr2,following};
   }
 
   @Post("loginByToken")

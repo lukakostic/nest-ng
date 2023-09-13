@@ -1,0 +1,55 @@
+:host {
+    display: contents;
+}
+.card {
+    background-color: #333;
+    border: 1px solid #444;
+    color: #fff;
+    margin-bottom: 20px;
+}
+
+.card-body {
+    background-color: #222;
+}
+
+.card-text {
+    color: #fff;
+}
+
+a.card-text {
+    color: #007BFF;
+    &:hover {
+        color: #0056b3;
+        text-decoration: underline;
+    }
+}
+
+.replyBtn{
+    height: 25px; line-height: 10px; margin-bottom: -5px;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.clpsBtn{
+    color: darkgray;
+    padding: 0;
+    padding-top: 4px;
+    margin: 0;
+    line-height: 8px;
+    position: absolute;
+    margin-left: -12px;
+    border-radius: 0px;
+    border: none;
+}
+.clpsBtn:hover{
+    background-color: transparent;
+    border: none;
+}
+.clpsBtn:focus{
+    background-color: transparent;
+    border: none;
+}
+
+.card-header{
+    overflow: hidden;
+}

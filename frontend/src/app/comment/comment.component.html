@@ -1,1 +1,50 @@
-<p>comment works!</p>
+<div class="card">
+    <div class="card-header .postTitleTitle d-flex justify-content-between" style="height: 24px; padding-top: 1px; border-bottom-color: rgb(110, 110, 110);">
+        <!-- *ngIf="(replies?.length ?? 0)>0" -->
+        <button  class="btn clpsBtn" [ngClass]="{'btn-outline-secondary': !collapsed}" (click)="expandCom()">
+            <span *ngIf="collapsed" style="font-size:19px;top:-7px; color:rgba(169, 169, 169, 0.922);">&#9650;</span>
+            <span *ngIf="!collapsed" style=" color:white; writing-mode: sideways-rl; margin-left: 5px; font-size: 18px;">&#9654;</span>
+        </button>
+        <span class="card-text" style="margin-left:10px; color: rgb(181, 181, 255);"  [routerLink]="['/user']" [queryParams]="{'id': comment!.user!.id}">@{{ comment!.user!.username }}</span>
+        <span style="color:grey">{{ getDate() }}</span>
+        <div style="border-left: 1px solid grey; padding-left: 10px; margin-top: 0px; margin-bottom: -7px; padding-top: 0px; padding-bottom: 15px;">
+            <button style=" margin-top: -10px;" class="btn vote px-1" [class.upvote] = "comment.userVote && comment?.userVote.positive == true" (click)="onUpvote($event)">👍</button>
+            <span style="font-size: 17px; margin-top: -13px;">{{ votes }}</span>
+            <button style=" margin-top: -10px;" class="btn vote px-1"  [class.upvote] = "comment?.userVote && comment?.userVote.positive == false" (click)="onDownvote($event)">👎</button>
+          </div>
+      </div>
+    <div class="card-body comBdy">
+        
+        <p class="card-text">{{ comment.text }}</p>
+        <button *ngIf="isLoggedIn" class="btn btn-outline-secondary mt-2 replyBtn" (click)="toggleReply()">Reply</button>
+
+        
+<!--         
+        <app-comment-card 
+            class="card mt-2" 
+            *ngFor="let reply of comment.odgovori; let i = index" 
+            [user]="user" 
+            [comment]="reply" 
+            (expandCom)="expandCom.emit($event)"
+            (izmeniCom)="izmeniCom.emit($event)"
+            (obrisiCom)="obrisiCom.emit($event)"  
+            (toggleReply)="toggleReply.emit($event)" 
+            (addReply)="addReply.emit($event)" 
+            (cancelReply)="cancelReply.emit($event)" 
+            *ngIf="comment.isExpanded">
+        </app-comment-card> 
+    -->
+    </div>
+</div>
+<div *ngIf="showReplyBox" style="margin-top: -20px; margin-bottom: 30px;">
+    <app-comment-creator 
+        class="mt-2" 
+        [cancelable]="true" 
+        (onSubmit)="addReply($event)" 
+        (onCancel)="cancelReply()">
+    </app-comment-creator>
+</div>
+
+<div *ngIf="!collapsed && comment!.replies && comment!.replies!.length>0" style="padding-left: 10px; border-left: 1px solid darkgray;">
+<app-comment *ngFor="let c of comment!.replies let i = index" [comment]="(comment!.replies!)[i]" [postId]="comment!.id!"></app-comment>
+</div>

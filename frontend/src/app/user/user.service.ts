@@ -1,7 +1,7 @@
 
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { tap } from 'rxjs/operators';
+import { take, tap } from 'rxjs/operators';
 import { UserRegData } from '../page-login/register/register.component';
 import { Observable, map } from 'rxjs';
 import { User } from './user.model';
@@ -11,7 +11,7 @@ import { AuthEffects,State, loginRequest, loginS } from './auth.actions';
 @Injectable({
   providedIn: 'root',
 })
-export class AuthService {
+export class UserService {
   apiUrl = 'http://localhost:3000';
 
   constructor(private http: HttpClient,
@@ -77,5 +77,14 @@ export class AuthService {
   loggedIn(user:User,token:string){
     console.log("AuthService loggedIn ",token,user);
     localStorage.setItem('token', token);
+  }
+
+  getAuthState() : State|null{
+    let state : any = null;
+    this.store.pipe(take(1)).subscribe((s:any) => state = s['auth']);
+    return state;
+  }
+  getLoggedUser(){
+    return this.getAuthState()?.loggedInUser;
   }
 }

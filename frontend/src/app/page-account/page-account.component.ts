@@ -1,15 +1,17 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, EventEmitter, Input, OnInit, Output, TemplateRef } from '@angular/core';
 import { ActivatedRoute, Router, Event, NavigationEnd } from '@angular/router';
-import { AuthService } from '../auth/auth.service';
+import { UserService } from '../user/user.service';
 import { Store } from '@ngrx/store';
 import { Observable, Subject, takeUntil, tap } from 'rxjs';
-import { User } from '../auth/user.model';
+import { User } from '../user/user.model';
 //import * as PostActions from '../post/post.actions';
-import { AuthEffects,State, loginRequest, loginS } from '../auth/auth.actions';
+import { AuthEffects,State, loginRequest, loginS } from '../user/auth.actions';
 import { Actions, ofType } from '@ngrx/effects';
 import { Post } from '../post/post.model';
 import { PageMainComponent } from '../page-main/page-main.component';
+import { Following } from '../user/following.model';
+import * as PostActions from '../post/post.actions';
 @Component({
   selector: 'app-page-account',
   templateUrl: './page-account.component.html',
@@ -23,22 +25,54 @@ export class PageAccountComponent implements OnInit{
   //@Input() mainPage : PageMainComponent;
   userId:string|null = null;
   user: User|null = null;
+  isFollowing:boolean = false;
+  following:Following|null = null;
   
   editUser: User|null = null;
   editMode: boolean = false;
   
-  posts: Post[] = [];
+  //posts: Post[] = [];
 
-  posts$: Observable<any[]> = this.store.select(state=>{
-    this.posts = ((state as any)['feed']).posts;
-    return this.posts;
-   } );
+  posts$: Observable<Post[]> = this.store.select(state=> ((state as any)['feed']).posts[this.userId!] );
+  
+   
+
+   loggedIn: boolean = false;
+   loggedInAccount : User|null = null;
+   
+   loggedInUser$: Observable<User|null> = this.store.select(state=> {
+     this.loggedInAccount = ((state as any)['auth']).loggedInUser;
+     this.loggedIn= !!(this.loggedInAccount);
+     return this.loggedInAccount;
+   });
+
+   followUser(){
+    this.isFollowing=true;
+
+    this.http.post('http://localhost:3000/follow',{token:this.authService.getLoginToken(),user:this.userId}).subscribe(
+      (response: any) => {
+        this.following = response;
+        if(this.following!=null){
+          this.isFollowing = true;
+        }else this.isFollowing = false;
+      }
+    );
+   }
+   unfollowUser(){
+    this.isFollowing=false;
+    this.http.post('http://localhost:3000/unfollow',{token:this.authService.getLoginToken(),user:this.userId}).subscribe(
+      (response: any) => {
+        if(response!=null) this.following = null;
+        if(response==true) this.isFollowing = false;
+      }
+    );
+   }
 
   constructor(
     private http: HttpClient,
     private route: ActivatedRoute,
     private router: Router,
-    private authService: AuthService,
+    private authService: UserService,
     private store: Store<State>
     ) {}
 
@@ -48,10 +82,28 @@ export class PageAccountComponent implements OnInit{
         this.router.navigate(['/login']);
         //   this.userId = this.authService.getLoginToken();
       }
+      /*
       this.http.get('http://localhost:3000/userById/'+this.userId).subscribe(
         (response: any) => {
           console.log("ACCOUNT PAGE ",response);
           this.user = response;
+          this.userLoaded.emit(this.user!);
+          //localStorage.setItem('token', response.access_token);
+        }
+      );
+        */
+       let token = this.authService.getLoginToken();
+       console.log("loading user id ",this.userId);
+      this.store.dispatch(PostActions.loadPosts({token,id:this.userId}));
+
+      this.http.post('http://localhost:3000/userAndFollowing',{token,user:this.userId}).subscribe(
+        (response: any) => {
+          console.log("ACCOUNT PAGE ",response);
+          this.user = response.user;
+          this.following = response.following;
+          if(this.following!=null){
+            this.isFollowing = true;
+          }else this.isFollowing = false;
           this.userLoaded.emit(this.user!);
           //localStorage.setItem('token', response.access_token);
         }

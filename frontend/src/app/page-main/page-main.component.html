@@ -7,22 +7,25 @@
 
   <ng-template #head>
   <div class="d-flex pb-5" style="margin-top: -12px;">
-    <button class="btnS w-100" *ngIf="loggedInAccount!=null && mode!=3" [ngClass]="{'btnS-primary': (mode==0), 'btnS-secondary': (mode!=0)}" 
-      (click)="mode=0">Feed</button>
-    <button class="btnS w-100" *ngIf="loggedInAccount!=null && mode!=3" [ngClass]="{'btnS-primary': (mode==1), 'btnS-secondary': (mode!=1)}"
-      (click)="mode=1">My Posts</button>
-    <button class="btnS w-100" *ngIf="mode!=3" [ngClass]="{'btnS-primary': (mode==2), 'btnS-secondary': (mode!=2)}"
-      (click)="mode=2">All Posts</button>
+    <button class="btnS w-100" *ngIf="loggedInAccount!=null && mode<3" [ngClass]="{'btnS-primary': (mode==0), 'btnS-secondary': (mode!=0)}" 
+      (click)="goFeed()">Feed</button>
+    <button class="btnS w-100" *ngIf="loggedInAccount!=null && mode<3" [ngClass]="{'btnS-primary': (mode==1), 'btnS-secondary': (mode!=1)}"
+      (click)="goMyPosts()">My Posts</button>
+    <button class="btnS w-100" *ngIf="mode<3" [ngClass]="{'btnS-primary': (mode==2), 'btnS-secondary': (mode!=2)}"
+      (click)="goAllPosts()">All Posts</button>
     <button class="btnS w-100" *ngIf="mode==3" [ngClass]="{'btnS-primary': (mode==3), 'btnS-secondary': (mode!=3)}"
       >Profile Overview: @{{loadedProfile?.username}}</button>
+    <button class="btnS w-100" *ngIf="mode==4" [ngClass]="{'btnS-primary': (mode==4), 'btnS-secondary': (mode!=4)}"
+      >Post Overview</button>
   </div>
 </ng-template>
   
     <div class="row">
+
       <div class="col-md-3 col-sm-12 p-3  order-1 order-md-1 pt-5">
         <!-- <button type="submit" class="btn" [ngClass]="{'btn-primary': (!(loggedInAccount$ | async)), 'btn-outline-primary': ((loggedInAccount$ | async))}" (click)="(loggedInAccount$ | async)?goProfile():goLogin()" style="border-radius: 19px; padding:7px; font-weight: bold;">&nbsp; &nbsp; &nbsp; &nbsp; {{(loggedInAccount$ | async)?(loggedInAccount$ | async).username:"Log in"}} &nbsp; &nbsp; &nbsp; &nbsp;</button> -->
         <div #matMenuTrigger="matMenuTrigger" [matMenuTriggerFor]="menu" style="position: absolute; margin-top: 60px;"></div>
-        <button type="submit" class="btn w-100" [ngClass]="{'btn-primary': (!(loggedInUser$|async)), 'btn-outline-primary': ((loggedInUser$|async))}" (click)="(loggedInAccount)?goProfileBadge():goLogin()" style="color:white; margin-bottom: 60px; border-radius: 19px; padding:10px; font-size: 20px; font-weight: bold; border-width: 4px;">{{(loggedInUser$|async)?(loggedInUser$|async)!.username:"Log in"}}</button>
+        <button type="submit" class="btn w-100" [ngClass]="{'btn-primary': (!(loggedInUser$|async)), 'btn-outline-primary': ((loggedInUser$|async))}" (click)="(loggedInAccount)?goProfileBadge():goLogin()" style="color:white; margin-bottom: 60px; border-radius: 19px; padding:10px; font-size: 20px; font-weight: bold; border-width: 4px;">{{(loggedInUser$|async)?("@"+(loggedInUser$|async)!.username):"Log in"}}</button>
         <mat-menu #menu="matMenu" yPosition="below" >
           <button mat-menu-item (click)="goProfile(null)" >
               <mat-icon>edit</mat-icon> <span>Profile Page</span>
@@ -35,15 +38,17 @@
 
         <button class="btn btnI w-100" style="margin-bottom: 20px;"  [ngClass]="{'btn-info': (mode==0), 'btn-outline-primary': (mode!=0)}" (click)="goFeed()">Home</button>
         <button class="btn btnI w-100" style="margin-bottom: 20px;"  [ngClass]="{'btn-info': (mode==3), 'btn-outline-primary': (mode!=3)}" (click)="goProfile(null)" >Profile</button>
-        <button class="btn btnI w-100" style="margin-bottom: 20px;"  [ngClass]="{'btn-info': (mode==1), 'btn-outline-primary': (mode!=1)}" (click)="mode=1">My Posts</button>
-        <button class="btn btnI w-100" style="margin-bottom: 20px;"  [ngClass]="{'btn-info': (mode==2), 'btn-outline-primary': (mode!=2)}" (click)="mode=2">All Posts</button>
+        <button class="btn btnI w-100" style="margin-bottom: 20px;"  [ngClass]="{'btn-info': (mode==1), 'btn-outline-primary': (mode!=1)}" (click)="goMyPosts()">My Posts</button>
+        <button class="btn btnI w-100" style="margin-bottom: 20px;"  [ngClass]="{'btn-info': (mode==2), 'btn-outline-primary': (mode!=2)}" (click)="goAllPosts()">All Posts</button>
       </div>
       
-      <app-feed *ngIf="mode==0" [isMyFeed]="true" [head]="head" ></app-feed>
-      <app-feed *ngIf="mode==1" [isMyFeed]="false" [head]="head" ></app-feed>
+      <app-feed *ngIf="mode==0" [isMyFeed]="true" [head]="head" [mainPage]="this" ></app-feed>
+      <app-feed *ngIf="mode==1" [isMyFeed]="false" [head]="head" [mainPage]="this" ></app-feed>
       
       <app-all-feed *ngIf="mode==2" [mainPage]="this" [head]="head"></app-all-feed>
       <app-page-account *ngIf="mode==3" (userLoaded)="doLoadProfile($event)" [head]="head"></app-page-account>
+      
+      <app-page-post *ngIf="mode==4" [mainPage]="this" [head]="head" ></app-page-post>
       
     </div>
   </div>

@@ -1,13 +1,14 @@
 import { Component, OnInit,OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { Observable, Subject, takeUntil } from 'rxjs';
-import { User } from './auth/user.model';
+import { Observable, Subject, take, takeUntil } from 'rxjs';
+import { User } from './user/user.model';
 //import * as PostActions from '../post/post.actions';
 import { Router } from '@angular/router';
-import { AuthService } from './auth/auth.service';
+import { UserService } from './user/user.service';
 //import * as PostActions from '../post/post.actions';
-import { AuthEffects,State, loginRequest, loginS } from './auth/auth.actions';
+import { AuthEffects,State, loginRequest, loginS } from './user/auth.actions';
 import { Actions, ofType } from '@ngrx/effects';
+
 
 @Component({
   selector: 'app-root',
@@ -29,7 +30,7 @@ export class AppComponent implements OnInit {
   constructor(private store: Store<State>,
     private router: Router,
     private updates$: Actions,
-    private authService: AuthService
+    private authService: UserService
     ) {
       updates$.pipe(
         ofType(loginS),
@@ -37,8 +38,7 @@ export class AppComponent implements OnInit {
      )
      .subscribe((s) => {
         console.log("LOGIN STATE",s);
-        
-        this.router.navigate(['/']);
+        if(this.authService.getAuthState()?.redirectOnLogin) this.router.navigate(['/']);
         //need to import router as service in constructor:
 
      });
@@ -49,7 +49,7 @@ export class AppComponent implements OnInit {
     console.log("On init token",token);
     if(token===undefined) console.log("TOKEN IS UNDEFINED");
     if(token)
-     this.store.dispatch(loginRequest({token,redirect:true}));//PostActions.loadPosts());
+     this.store.dispatch(loginRequest({token,redirect:false}));//PostActions.loadPosts());
   }
   ngOnDestroy() {
       this.destroyed$.next(true);

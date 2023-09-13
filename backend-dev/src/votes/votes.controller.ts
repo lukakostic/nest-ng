@@ -18,34 +18,42 @@ export class VoteController {
         private readonly usersServices: UserServices,
         private readonly voteServices: VoteServices,
     ) { }
-    @Post()
+    @Post("votePost")
     async votePost(@Body() r: UserReq<{ postId: string, positive: boolean }>): Promise<Upvote> {
         let usr = await this.usersServices.loginToken(r.token);
+        if (usr == null) return null;
         return this.voteServices.votePost(usr.id, r.postId, r.positive);
     }
-    @Post()
+    @Post("unvote")
+    async unvote(@Body() r: UserReq<{ postId: string }>): Promise<true|null> {
+        let usr = await this.usersServices.loginToken(r.token);
+        if (usr == null) return null;
+        return this.voteServices.unvote(usr.id, r.postId);
+    }
+    @Post("voteComment")
     async voteComment(@Body() r: UserReq<{ commentId: string, positive: boolean }>): Promise<Upvote> {
         let usr = await this.usersServices.loginToken(r.token);
+        if (usr == null) return null;
         return this.voteServices.voteComment(usr.id, r.commentId, r.positive);
     }
-    @Post()
+    @Post("getUserPCVote")
     async getUserPCVote(@Body() r: UserReq<{ postId: string }>): Promise<Upvote | null> {
         let usr = await this.usersServices.loginToken(r.token);
         return this.voteServices.getUserPCVote(usr.id, r.postId);
     }
-    @Post()
+    @Post("getUserCCVote")
     async getUserVotes(@Body() r: UserReq<{ id: string }>): Promise<Upvote[] | null> {
         return this.voteServices.getUserVotes(r.id);
     }
-    @Post()
+    @Post("getPCVotes")
     async getPCVotes(@Body() r: UserReq<{ id: string }>): Promise<Upvote[] | null> {
         return this.voteServices.getPCVotes(r.id);
     }
-    @Post()
+    @Post("getPCVoteCount")
     async getPCVoteCount(@Body() r: UserReq<{ id: string }>): Promise<number> {
         return this.voteServices.getPCVoteCount(r.id);
     }
-    @Post()
+    @Post("getVoteCountAndUserVote")
     async getVoteCountAndUserVote(@Body() r: UserReq<{ id: string }>): Promise<{ count: number, userVote: Upvote | null }> {
         let usr = await this.usersServices.loginToken(r.token);
         let count = await this.voteServices.getPCVoteCount(r.id);

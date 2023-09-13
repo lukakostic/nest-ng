@@ -1,0 +1,9 @@
+<div class="container mt-3" *ngIf="isLoggedIn">
+    <div class="form-group">
+        <textarea class="form-control" rows="3" [(ngModel)]="text" placeholder="Write reply..."></textarea>
+    </div>
+    <div class="form-group text-right">
+        <button class="btn btn-primary" (click)="post()">Post</button>
+        <button *ngIf="cancelable" class="btn btn-secondary" style="margin-left: 10px;" (click)="cancel()">Cancel</button>
+    </div>
+</div>

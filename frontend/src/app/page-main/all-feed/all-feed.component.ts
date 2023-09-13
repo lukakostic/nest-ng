@@ -8,8 +8,9 @@ import { Store } from '@ngrx/store';
 import { Post } from '../../post/post.model';
 import * as PostActions from '../../post/post.actions';
 import { State } from '../../post/post.reducer';
-import { User } from 'src/app/auth/user.model';
+import { User } from 'src/app/user/user.model';
 import { PageMainComponent } from '../page-main.component';
+import { UserService } from 'src/app/user/user.service';
 
 
 @Component({
@@ -20,22 +21,18 @@ import { PageMainComponent } from '../page-main.component';
 export class AllFeedComponent implements OnInit{
   @Input() head: TemplateRef<any>;
   @Input() mainPage : PageMainComponent;
-  posts$: Observable<Post[]> = this.store.select(state=> ((state as any)['feed']).posts );
+  posts$: Observable<Post[]> = this.store.select(state=> ((state as any)['feed']).posts['all'] );
 
   constructor(
     private http: HttpClient,
-    private store: Store<State>
+    private store: Store<State>,
+    private authService: UserService
     ) {}
     allUsers: User[] = [];
 
   ngOnInit(): void {
-/*
-    let state: any = null;
-    this.store.pipe(take(1)).subscribe((s:any) => state = s);
-    console.log("STATE",state);
-    this.store.dispatch(PostActions.loadFeed({token:(state as any).auth.token}));
-  */  
-    this.store.dispatch(PostActions.loadPosts({id:null}));
+ console.log("LOAD POSTS: load all posts.");
+    this.store.dispatch(PostActions.loadPosts({token:this.authService.getLoginToken(),id:null}));
     console.log("ALL users ping");
     this.http.get('http://localhost:3000/allUsers').subscribe((response: any) => {
         

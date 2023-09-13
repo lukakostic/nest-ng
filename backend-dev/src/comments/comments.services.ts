@@ -18,10 +18,14 @@ export class CommentServices {
     }
 
     async getAllComments(): Promise<CommentM[]> {
-        return await CommentM.find();
+        return await CommentM.find({relations: ["user"],
+        order: {
+            timestamp: "ASC"
+        }});
     }
     async getCommentById(commentId: string): Promise<CommentM> {
-        return await CommentM.findOne({ where: { id: commentId } });
+        return await CommentM.findOne({ where: { id: commentId },
+            relations: ["user"] });
     }
     async getCommentsByUserId(userId: string): Promise<CommentM[]> {
         return await CommentM.find({
@@ -29,6 +33,10 @@ export class CommentServices {
                 user: {
                     id: userId
                 }
+            },
+            relations: ["user"],
+            order: {
+                timestamp: "ASC"
             }
         });
 
@@ -39,10 +47,25 @@ export class CommentServices {
                 user: {
                     username: username
                 }
+            },
+            relations: ["user"],
+            order: {
+                timestamp: "ASC"
             }
         });
     }
     async deleteComment(commentId: string): Promise<void> {
         await CommentM.delete({ id: commentId });
+    }
+    async getCommentsByPostId(postId: string, type?:string): Promise<CommentM[]> {
+        return await CommentM.find({
+            where: {
+                replyToId: postId
+            },
+            relations: ["user"],
+            order: {
+                timestamp: "ASC"
+            }
+        });
     }
 }

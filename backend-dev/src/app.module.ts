@@ -15,6 +15,7 @@ import { CommentServices } from './comments/comments.services';
 //import { AppService } from './app.service';
 
 //import { UsersModule } from './users/users.module';
+import { AuthModule } from './auth/auth.module';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
@@ -27,6 +28,7 @@ import { CommentServices } from './comments/comments.services';
       entities: [__dirname + '/**/*.entity{.ts,.js}'], // Specify the location of your entities
       synchronize: true, // This will automatically create database tables based on your entities
     }),
+    AuthModule,
   //  UsersModule, 
   ],
   controllers: [AppController,

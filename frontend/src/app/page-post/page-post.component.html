@@ -1,0 +1,25 @@
+
+<div class="col-md-6 col-sm-12 p-3 order-3 order-md-2" >
+    <ng-container [ngTemplateOutlet]="head"></ng-container>
+    
+      <div class="Xcontainer mt-3">
+        
+        <app-post [inputPost]="post" [index]="0"></app-post>
+        
+        <app-comment-creator class="mainComCreator" [cancelable]="false" (onSubmit)="submitComment($event)"></app-comment-creator>
+
+        <hr class="py-2">
+
+        <app-comment *ngFor="let comment of comments" [comment]="comment" [postId]="post!.id"></app-comment>
+      </div>
+    </div>
+    <div class="col-md-3 col-sm-12 p-3 pt-5 order-2 order-md-3" style="color: white;">
+
+      <div class="sidebar p-3" *ngIf="other">
+        <h3 class="fw-bold" style="font-size: 17px;">Following ({{other?.length}}):</h3>
+        
+          <div *ngFor="let user of other" class="allUsers" style="padding-left: 10px;">
+              <p (click)="mainPage.goProfile(user.id)" style="cursor: pointer;">{{user.username}}</p>
+          </div>
+      </div> 
+    </div>

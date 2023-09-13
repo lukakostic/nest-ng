@@ -10,8 +10,8 @@ export class Following extends BaseEntity {
   //@JoinColumn()
   public from!: User;
   
-  @OneToOne(() => User, { nullable: false })
-  @JoinColumn()
+  @ManyToOne(() => User, (user)=>user.followers, { nullable: false })
+  //@JoinColumn()
   public to!: User;
   
   @Column({type: 'bigint'})

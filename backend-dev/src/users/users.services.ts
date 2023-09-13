@@ -6,6 +6,7 @@ import {User} from '../_entities/user.entity';
 //import BookEntity from '../db/entity/book.entity';
 //import {getConnection} from "typeorm";
 import { Following } from 'src/_entities/following.entity';
+import { FindOptionsWhere } from 'typeorm';
 
 const bcrypt = require('bcrypt');
 
@@ -64,45 +65,51 @@ export class UserServices {
     await User.delete({id: userId});
   }
 
-  async followUser(user1Id: string, user2Id): Promise<Following> {
+  async followUser(user1Id: string, user2Id): Promise<Following|null> {
+    if(user1Id==user2Id) return null;
+    
     const followingEntity: Following = Following.create();
-    followingEntity.from = (await User.findOne({where: {id: user1Id}})).id as any;
-    followingEntity.to = (await User.findOne({where: {id: user2Id}})).id as any;
+    followingEntity.from = user1Id as any;
+    followingEntity.to = user2Id as any;
     //followingEntity.to = await User.findOne({where: {id: user2Id}});
-    //console.log("followUser",followingEntity.to,followingEntity.from);
+    console.log("followUser",followingEntity.to,followingEntity.from);
     followingEntity.timestamp = Date.now();
     await Following.save(followingEntity);
     return followingEntity;
   }
+  async unfollowUser(user1Id: string, user2Id): Promise<true|null> {
+    console.log("unfollow user",user1Id,user2Id);
+    if(user1Id==user2Id) return null;
+    let res = await Following.delete({from: user1Id, to: user2Id} as any);
+   
+    if(res.affected>0) return true;
+    return null;
+  }
   async isUserFollowing(user1Id:string,user2Id:string): Promise<Following|null> {
-    let usr1 = await User.findOne({where: {id: user1Id}});
-    let usr2 = await User.findOne({where: {id: user2Id}});
     return await Following.createQueryBuilder('f')
     .select()
-    .where("f.from = :u1", { u1:usr1.id })
-    .andWhere("f.to = :u2", { u2:usr2.id })
+    .where("f.from = :u1", { u1:user1Id })
+    .andWhere("f.to = :u2", { u2:user2Id })
     .getOne();
     //return await Following.findOne({where: {from: usr1, to: usr2}});
   }
   async getAllFollowing(userId:string): Promise<Following[]> {
     console.log("getAllFollowing",userId);
-    let usr = await User.findOne({where: {id: userId}});
     return await Following.createQueryBuilder('f')
     .select()
     .leftJoinAndSelect("f.to", "user")
     //.from(Following, "f")
-    .where("f.from = :u", { u:usr.id })
+    .where("f.from = :u", { u:userId })
     .orderBy("f.timestamp", "DESC")
     .getMany();
     //return await Following.find({where: {from: usr}});
   }
   async getAllFollowers(userId:string):Promise<Following[]>{//:Promise<User[]>{//: Promise<Following[]> {
     console.log("getAllFollowers",userId);
-    let usr = await User.findOne({where: {id: userId}});
     return (await Following.createQueryBuilder('f')
     .select()
     .leftJoinAndSelect("f.from", "user")
-    .where("f.to = :u", { u:usr.id })
+    .where("f.to = :u", { u:userId })
     .orderBy("f.timestamp", "DESC")
     .getMany());//.map(f=>f.from);
     //return await Following.find({where: {to: usr}});
