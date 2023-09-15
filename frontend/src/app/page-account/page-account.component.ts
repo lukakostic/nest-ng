@@ -53,7 +53,7 @@ export class PageAccountComponent implements OnInit{
    followUser(){
     this.isFollowing=true;
 
-    this.authService.reqPost('/follow',{user:this.userId}).subscribe((response: any) => {
+    this.authService.follow(this.userId!).subscribe((response: any) => {
         this.following = response;
         if(this.following!=null){
           this.isFollowing = true;
@@ -63,7 +63,7 @@ export class PageAccountComponent implements OnInit{
    }
    unfollowUser(){
     this.isFollowing=false;
-    this.authService.reqPost('/unfollow',{user:this.userId}).subscribe((response: any) => {
+    this.authService.unfollow(this.userId!).subscribe((response: any) => {
         if(response!=null) this.following = null;
         if(response==true) this.isFollowing = false;
       }
@@ -87,14 +87,14 @@ export class PageAccountComponent implements OnInit{
        console.log("loading user id ",this.userId);
       this.store.dispatch(PostActions.loadPosts({id:this.userId}));
 
-      this.authService.reqPost('/allFollowing',{id:this.userId}).subscribe((response: any) => {
+      this.authService.allFollowing(this.userId!).subscribe((response: any) => {
         this.followingUsers = response;
       });
-      this.authService.reqPost('/allFollowers',{id:this.userId}).subscribe((response: any) => {
+      this.authService.allFollowers(this.userId!).subscribe((response: any) => {
         this.followerUsers = response;
       });
       
-      this.authService.reqPost('/userAndFollowing',{user:this.userId}).subscribe((response: any) => {
+      this.authService.userAndFollowing(this.userId!).subscribe((response: any) => {
           console.log("ACCOUNT PAGE ",response);
           this.user = response.user;
           this.following = response.following;
@@ -149,7 +149,7 @@ userDate(){
     alert(this.user!.id);
   }
   saveEdit(){
-    this.authService.reqPost('/editMyDescription',{desc:this.editUser?.description}).subscribe((response: any) => {
+    this.authService.editMyDescription(this.editUser?.description).subscribe((response: any) => {
         this.user = response;
     });
     this.editMode = false;

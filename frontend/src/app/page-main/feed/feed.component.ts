@@ -40,7 +40,7 @@ export class FeedComponent implements OnInit {
   ngOnInit(): void {
     this.reqPosts();
 
-    this.authService.reqPost('/allFollowingMe',{}).subscribe((response: any) => {
+    this.authService.allFollowingMe().subscribe((response: any) => {
         console.log("All following me",response);
         if(response!=null){
           this.other = response.map((f:any)=>f.to);

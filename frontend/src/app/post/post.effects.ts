@@ -28,6 +28,9 @@ export class PostService {
     uploadPost(r:{post:Partial<Post>}){
       return this.authService.reqPost('/uploadPost',{...r}) as Observable<Post>;
     }
+    loadFullPost(id:string){
+      return this.authService.reqPost('/loadFullPost',{id:id}) as Observable<Post>;
+    }
 }
 
 

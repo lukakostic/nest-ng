@@ -3,7 +3,7 @@ version: '3.8'
 services:
   backend:
     build:
-      context: ./backend
+      context: ./backend-dev
       dockerfile: Dockerfile
     ports:
       - "3000:3000"
@@ -16,7 +16,7 @@ services:
     depends_on:
       - db
     volumes:
-      - ./backend:/usr/src/app
+      - ./backend-dev:/usr/src/app
       - /usr/src/app/node_modules
 
 

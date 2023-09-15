@@ -4,18 +4,19 @@ import { UserService } from '../user/user.service';
 import { Store } from '@ngrx/store';
 import { State } from '../user/user.reducer';
 import { take } from 'rxjs';
+import { Votable } from '../user/Votable';
+import { VoteService } from "../user/vote.service";
 
 @Component({
   selector: 'app-post',
   templateUrl: './post.component.html',
   styleUrls: ['./post.component.scss']
 })
-export class PostComponent implements OnInit,OnChanges {
+export class PostComponent extends Votable implements OnInit,OnChanges {
 
   @Input() inputPost: Post|null = null;
   post : Post | null = null;
   @Input() index: number = -1;
-  votesWithoutUser = 0;
 
 
   isLoggedIn: boolean = false;
@@ -29,8 +30,14 @@ export class PostComponent implements OnInit,OnChanges {
 
   constructor(
     private authService: UserService,
+    private voteService2 : VoteService,
     private store: Store<State>,
-      ) {}
+      ) {
+        super(
+          true,
+          voteService2
+        );
+      }
   
     ngOnChanges(){
       if(this.inputPost==null) return;
@@ -83,80 +90,4 @@ export class PostComponent implements OnInit,OnChanges {
     return `${date.toLocaleDateString()} ${hrs}:${min} (${str})`;
   }
   
-  calcVotesWithoutUser(){
-    if(this.post!.userVote==null) return this.votesWithoutUser = this.post!.voteCount;
-    let v = this.post!.voteCount;
-    if(this.post!.userVote.positive)
-      v--;
-    else
-      v++; 
-    return this.votesWithoutUser = v;
-  }
-  get votes() {
-    if(this.post==null) return 0;
-    let v = 0;
-    if(this.post.userVote)
-      v = (this.post.userVote.positive) ? 1 : -1;
-    return this.votesWithoutUser + v;
-  }
-  sendVote(positive:boolean){
-    if(!this.isLoggedIn) return;
-    if(this.post==null) return;
-    let ov = this.votesWithoutUser;
-    this.post.userVote = {positive};
-    this.post.voteCount = ov+(positive?1:-1);
-    this.authService.reqPost('/votePost',{postId:this.post.id,positive}).subscribe((response: any) => {
-        console.log("USER VOTE",response);
-        if(response){
-          this.post!.userVote = response;
-          this.post!.voteCount = ov+(this.post!.userVote.positive?1:-1);
-        }else {
-          this.post!.userVote = null;
-          this.post!.voteCount = ov;
-        }
-        //this.userVote = response;
-        
-      }
-    );
-  }
-  unvote(){
-    if(!this.isLoggedIn) return;
-    if(this.post==null) return;
-    let ov = this.votesWithoutUser;
-    let oldCount = this.post.voteCount;
-    let oldVote = this.post.userVote?{...this.post.userVote}:null;
-    this.post.userVote = null;
-    this.post.voteCount = ov;
-    this.authService.reqPost('/unvote',{postId:this.post.id}).subscribe((response: any) => {
-        console.log("USER unVOTE",response);
-        if(response==true){
-          if(this.post!.userVote){
-            this.post!.voteCount = ov;
-            this.post!.userVote = null;
-          }
-        }else{
-          this.post!.userVote = oldVote;
-          this.post!.voteCount = oldCount;
-        }
-        //this.userVote = response;
-      }
-    );
-  }
-  onUpvote(event:Event) {
-    event.stopImmediatePropagation();
-    event.preventDefault();
-    if(!this.isLoggedIn) return;
-    if(this.post==null) return;
-    if(this.post!.userVote?.positive) return this.unvote();
-    this.sendVote(true);
-  }
-  onDownvote(event:Event) {
-    event.stopImmediatePropagation();
-    event.preventDefault();
-    if(!this.isLoggedIn) return;
-    if(this.post==null) return;
-    if(this.post!.userVote?.positive==false) return this.unvote();
-    this.sendVote(false);
-  }
-
 }

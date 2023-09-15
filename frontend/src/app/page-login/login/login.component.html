@@ -1,4 +1,4 @@
-<form (submit)="onLogin()" class="p-5 rounded">
+<form (submit)="onLogin()" class="p-5 rounded" #registerForm="ngForm">
   <h2 class="text-center" style="color: white;">Login</h2>
   <div class="mb-3">
     <input type="text" class="form-control" [(ngModel)]="username" name="username" placeholder="Username" required>
@@ -6,7 +6,7 @@
   <div class="mb-3">
     <input type="password" class="form-control" [(ngModel)]="password" name="password" placeholder="Password" required>
   </div>
-  <button type="submit" class="btn btn-primary w-100 mt-4">Login</button>
+  <button type="submit" [disabled]="!registerForm.valid" class="btn btn-primary w-100 mt-4">Login</button>
 </form>
 <h1 *ngIf="(error$|async)" class="text-center" style="color: red;">Last Error: {{(error$|async)}}</h1>
 <!-- <p *ngIf="loggedIn" class="alert alert-success">Logged in as: {{ username }}</p> -->

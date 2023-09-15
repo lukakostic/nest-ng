@@ -40,6 +40,8 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { PagePostComponent } from './page-post/page-post.component';
 import { LetDirective } from '@ngrx/component';
 import { CommentCreatorComponent } from './comment-creator/comment-creator.component';
+import { VoteService } from './user/vote.service';
+import { CommentService } from './comment/comment.service';
 
 const routes: Routes = [
   { path: '', component: PageMainComponent },
@@ -79,7 +81,7 @@ const routes: Routes = [
     MatMenuModule,MatIconModule,MatButtonModule,
     LetDirective
   ],
-  providers: [UserService,PostService],
+  providers: [UserService,PostService,VoteService,CommentService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -113,4 +113,31 @@ export class UserService {
   getLoggedUser(){
     return this.getAuthState()?.loggedInUser;
   }
+
+  ////////////// following
+
+  follow(user:string){
+    return this.reqPost('/follow',{user});
+  }
+  unfollow(user:string){
+    return this.reqPost('/unfollow',{user});
+  }
+
+  allFollowing(id:string){
+    return this.reqPost('/allFollowing',{id});
+  }
+  allFollowers(id:string){
+    return this.reqPost('/allFollowers',{id});
+  }
+  userAndFollowing(user:string){
+    return this.reqPost('/userAndFollowing',{user});
+  }
+  allFollowingMe(){
+    return this.reqPost('/allFollowingMe',{});
+  }
+
+  /////////////// profile
+  editMyDescription(desc:string){
+    return this.reqPost('/editMyDescription',{desc});
+  }
 }

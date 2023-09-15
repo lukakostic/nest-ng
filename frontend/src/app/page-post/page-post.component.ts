@@ -15,6 +15,8 @@ import { PageMainComponent } from '../page-main/page-main.component';
 import { Following } from '../user/following.model';
 import * as PostActions from '../post/post.actions';
 import { CommentM } from '../comment/comment.model';
+import { PostService } from '../post/post.effects';
+import { CommentService } from '../comment/comment.service';
 @Component({
   selector: 'app-page-post',
   templateUrl: './page-post.component.html',
@@ -34,13 +36,14 @@ export class PagePostComponent implements OnInit{
   loggedInUser$:any = this.store.select(state=> {
     let loggedInAccount = ((state as any)['auth']).loggedInUser;
     this.isLoggedIn = (loggedInAccount!=null);
-    console.log("page post logged inddddddddddddddddddd",this.isLoggedIn);
   });
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private authService: UserService,
-    private store: Store<State>
+    private store: Store<State>,
+    private postService: PostService,
+    private commService: CommentService
     ) {}
 
   ngOnInit(): void {
@@ -65,7 +68,7 @@ export class PagePostComponent implements OnInit{
     let isLoggedIn = this.authService.getLoggedUser()!=null;
     console.log("POST ID",this.postId);
   
-    this.authService.reqPost('/loadFullPost',{id:this.postId}).subscribe((response: any) => {
+    this.postService.loadFullPost(this.postId!).subscribe((response: any) => {
         console.log("POST LOAD RESPONSE",response);
         if(response){
           this.post = response.post;
@@ -77,7 +80,7 @@ export class PagePostComponent implements OnInit{
 
 
     if(isLoggedIn){
-      this.authService.reqPost('/allFollowingMe',{}).subscribe((response: any) => {
+      this.authService.allFollowingMe().subscribe((response: any) => {
         console.log("All following me",response);
         if(response!=null){
           this.other = response.map((f:any)=>f.to);
@@ -89,7 +92,8 @@ export class PagePostComponent implements OnInit{
 
   submitComment(text:string){
     if(this.authService.getLoggedUser()!=null){
-      this.authService.reqPost('/uploadComment',{comment:{text:text},toId:this.postId,isPost:true}).subscribe(
+      //this.authService.reqPost('/uploadComment',{comment:{text:text},toId:this.postId,isPost:true}).subscribe(
+      this.commService.uploadComment(text,this.postId!,true).subscribe(
         (response: any) => {
           console.log("Comment response",response);
           if(response!=null){
