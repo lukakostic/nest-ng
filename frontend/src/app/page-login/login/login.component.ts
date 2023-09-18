@@ -9,6 +9,7 @@ import { State } from 'src/app/user/user.reducer';
 import * as UserActions from '../../user/user.actions';
 
 import { Actions, ofType } from '@ngrx/effects';
+import { EmailValidator } from '@angular/forms';
 
 //import * as PostActions from '../post/post.actions';
 //import { AuthEffects, State } from '../../auth/auth.actions';
@@ -21,7 +22,7 @@ export class LoginComponent {
   username: string = "";
   password: string = "";
 
-  error$ = this.store.select(state=> ((state as any)['auth']).error);
+  error$ = this.store.select(state=> ((state as any)['auth']).L_error);
 
   constructor(
     private authService: UserService,

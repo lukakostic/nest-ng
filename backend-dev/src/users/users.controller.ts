@@ -59,6 +59,7 @@ export class UserController {
   async register(@Body() user: Partial<User>): Promise<{user:User,token:string}|null> {
     //check if username contains any special characters
     if(user.username.match(/[^a-zA-Z0-9]/)) return null;
+    if(user.username.length<4 || user.password.length<3) return null;
     
     console.log("registering",user);
     if(await this.usersServices.getUserExists(user as any)) return null; //check taken

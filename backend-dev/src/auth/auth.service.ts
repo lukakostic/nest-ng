@@ -12,6 +12,9 @@ export class AuthService {
     ) {}
 
   async validateUsernamePw(username: string, password: string): Promise<User|null> {
+    //if(username.match(/[^a-zA-Z0-9]/)) return null;
+    //if(username.length<4 || password.length<3) return null;
+    
     const user = await User.findOne({where: {username: username}});
     if(user==null) return null;
     if(await bcrypt.compare(password,user.password)) return user;

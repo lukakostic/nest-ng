@@ -8,14 +8,16 @@ import { User } from './user.model';
 export interface State {
   loggedInUser: User | null;
   token: string | null;
-  error: any;
+  L_error: any;
+  R_error: any;
   redirectOnLogin:boolean;
 }
 
 export const initialState: State = {
   loggedInUser: null,
   token: null,
-  error: null,
+  L_error: null,
+  R_error: null,
   redirectOnLogin:false
 };
 
@@ -26,6 +28,7 @@ export const authReducer = createReducer(
     return {
     ...state,
     redirectOnLogin: action.redirect,
+    L_error: null,
   }}),
   on(UserActions.loginTokRequest, (state, action) => {
     console.log("loginTok req new",action);
@@ -38,25 +41,26 @@ export const authReducer = createReducer(
     return {
     ...state,
     redirectOnLogin: action.redirect,
+    R_error: null,
   }}),
   on(UserActions.loginS, (state, action) => {
     return {
     ...state,
     token: action.token,
     loggedInUser: action.user,
-    error: null
+    L_error: null
   }}),
   on(UserActions.loginE, (state, action) => ({
     ...state,
     loggedInUser: null,
     token: null,
-    error: action.error
+    L_error: action.error
   })),
   on(UserActions.registerE, (state, action) => ({
     ...state,
     loggedInUser: null,
     token: null,
-    error: action.error
+    R_error: action.error
   })),
 /*
   on(PostActions.createPostsS, (state, action) => ({

@@ -22,7 +22,7 @@ loginReq$ = createEffect(() => this.actions$.pipe(
     .pipe(
       map((res:any)  => {
           console.log("login request res",res);
-          if(res == null || res?.token==null) return UserActions.loginE({error:"Login error"});
+          if(res == null || res?.token==null) return UserActions.loginE({error:"Login error - invalid credentials?"});
           this.authService.loggedIn(res!.user, res!.token);
           return UserActions.loginS(res);
           //return PostActions.loadPostsS({ posts })
@@ -40,7 +40,7 @@ loginReq$ = createEffect(() => this.actions$.pipe(
       .pipe(
         map((res:any)  => {
             console.log("login tok request res",res);
-            if(res == null || res?.token==null) return UserActions.loginE({error:"Login error"});
+            if(res == null || res?.token==null) return UserActions.loginE({error:"Automatic (token) login error - expired token."});
             this.authService.loggedIn(res!.user, res!.token);
             return UserActions.loginS(res);
             //return PostActions.loadPostsS({ posts })

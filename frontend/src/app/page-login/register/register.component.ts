@@ -9,7 +9,7 @@ import { AuthEffects } from 'src/app/user/user.effects';
 import { State } from 'src/app/user/user.reducer';
 //import * as PostActions from '../post/post.actions';
 //import { AuthEffects, State } from '../../auth/auth.actions';
-
+import { EmailValidator } from '@angular/forms';
 
 @Component({
   selector: 'app-register',
@@ -24,7 +24,7 @@ export class RegisterComponent {
   password: string = "";
   registered: boolean = false;
 
-  error$ = this.store.select(state=> ((state as any)['auth']).error);
+  error$ = this.store.select(state=> ((state as any)['auth']).R_error);
 
   constructor(
     private authService: UserService,
