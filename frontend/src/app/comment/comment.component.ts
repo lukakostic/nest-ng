@@ -17,29 +17,24 @@ import { CommentService } from './comment.service';
 })
 export class CommentComponent extends Votable implements OnInit{
 
-    @Input() comment: CommentM;
-    /*
-    @Input() user: any;
-    loggedInUser = window.loggedInUser;
-    currentComment: any;
-    */
-    @Input() postId :string;
+  @Input() comment: CommentM;
+  @Input() postId :string;
 
-    isLoggedIn: boolean = false;
-    isMyPost = false;
-    loggedInUser$:any = this.store.select(state=> {
-      let loggedInAccount = ((state as any)['auth']).loggedInUser;
-      this.isLoggedIn = (loggedInAccount!=null);
-      if(this.comment!=null && this.comment.user!=null && loggedInAccount!=null)
-        this.isMyPost = loggedInAccount.id == this.comment.user?.id;
-    });
+  isLoggedIn: boolean = false;
+  isMyPost = false;
+  loggedInUser$:any = this.store.select(state=> {
+    let loggedInAccount = ((state as any)['auth']).loggedInUser;
+    this.isLoggedIn = (loggedInAccount!=null);
+    if(this.comment!=null && this.comment.user!=null && loggedInAccount!=null)
+      this.isMyPost = loggedInAccount.id == this.comment.user?.id;
+  });
+
   
-    
 
-    collapsed: boolean = true;
+  collapsed: boolean = true;
 
-    showReplyBox = false;
-    reply : string|null = null;
+  showReplyBox = false;
+  reply : string|null = null;
 
   constructor(
     private store : Store<State>,
@@ -66,83 +61,76 @@ export class CommentComponent extends Votable implements OnInit{
   }
   
 
-    expandCom(newState = undefined as any){
-      newState ??= !this.collapsed;
-      this.collapsed = newState;
-
-      /*
-        if (onDoneCB === undefined) {
-            this.collapseComments(comment.isExpanded, comment, 1);
-            return;
-        }
-        */
-        if (!this.collapsed) {
-            console.log('Loading replies of', this.comment);
-            this.commService.loadCommentsPost(this.comment.id!).subscribe((response: any) => {
-              console.log("Comment reply response",response);
-              if(response!=null){
-                //this.comments = response;
-                (this.comment as any)['replies'] = response;
-              }
-            }
-          );
-        
-        }
-    }
-
-    addReply(text:string) {
-        console.log('REPLYING TO COM', text);
-        this.showReplyBox = false;
-        
-        
-        if(this.authService.getLoggedUser()!=null){
+  expandCom(newState = undefined as any){
+    newState ??= !this.collapsed;
+    this.collapsed = newState;
     
-          this.commService.uploadComment(text,this.comment.id!,false).subscribe((response: any) => {
-            console.log("Comment reply response",response);
-              
-              if(response!=null){
-                //this.comments = response;
-                //(this.comment as any)['replies'].push(response);
-              }
-              this.expandCom(false);
-            }
-          );
+    if (!this.collapsed) {
+        console.log('Loading replies of', this.comment);
+        this.commService.loadCommentsPost(this.comment.id!).subscribe((response: any) => {
+          console.log("Comment reply response",response);
+          if(response!=null){
+            //this.comments = response;
+            (this.comment as any)['replies'] = response;
+          }
         }
+      ); 
     }
+  }
 
-    getDate(){
-
-      if(this.comment==null) return "";
-      let date = new Date(parseInt(this.comment!.timestamp as any));
-      let diff = Math.floor((Date.now() - date.getTime()) / 1000);
-      let str = "";
-      if(diff<60){
-        str = diff + " seconds ago";
-      }else if(diff<3600){
-        str = Math.floor(diff/60) + " minutes ago";
-      }
-      else if(diff<86400){
-        str = Math.floor(diff/3600) + " hours ago";
-      }
-      else if(diff<2592000){
-        str = Math.floor(diff/86400) + " days ago";
-      }
-      else if(diff<31536000){
-        str = Math.floor(diff/2592000) + " months ago";
-      }
-      else{
-        str = Math.floor(diff/31536000) + " years ago";
-      }
+  addReply(text:string) {
+      console.log('REPLYING TO COM', text);
+      this.showReplyBox = false;
+      
+      
+      if(this.authService.getLoggedUser()!=null){
   
-      let hrs = date.getHours();
-      let min = date.getMinutes(); 
-      return `${date.toLocaleDateString()} ${hrs}:${min} (${str})`;
+        this.commService.uploadComment(text,this.comment.id!,false).subscribe((response: any) => {
+          console.log("Comment reply response",response);
+            
+            if(response!=null){
+              //this.comments = response;
+              //(this.comment as any)['replies'].push(response);
+            }
+            this.expandCom(false);
+          }
+        );
+      }
+  }
+
+  getDate(){
+
+    if(this.comment==null) return "";
+    let date = new Date(parseInt(this.comment!.timestamp as any));
+    let diff = Math.floor((Date.now() - date.getTime()) / 1000);
+    let str = "";
+    if(diff<60){
+      str = diff + " seconds ago";
+    }else if(diff<3600){
+      str = Math.floor(diff/60) + " minutes ago";
+    }
+    else if(diff<86400){
+      str = Math.floor(diff/3600) + " hours ago";
+    }
+    else if(diff<2592000){
+      str = Math.floor(diff/86400) + " days ago";
+    }
+    else if(diff<31536000){
+      str = Math.floor(diff/2592000) + " months ago";
+    }
+    else{
+      str = Math.floor(diff/31536000) + " years ago";
     }
 
-    cancelReply() {
-      this.showReplyBox = false;  
-      //comment.showReply = false;
-       // this.reply = null;
-    }
+    let hrs = date.getHours();
+    let min = date.getMinutes(); 
+    return `${date.toLocaleDateString()} ${hrs}:${min} (${str})`;
+  }
+
+  cancelReply() {
+    this.showReplyBox = false;  
+    //comment.showReply = false;
+      // this.reply = null;
+  }
 
 }

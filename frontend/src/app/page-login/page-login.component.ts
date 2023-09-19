@@ -19,8 +19,7 @@ import { Router } from '@angular/router';
 export class PageLoginComponent {
   isLogin = true;
 
-  constructor() {
-    }
+  constructor() {}
 
 
   showLogin() {

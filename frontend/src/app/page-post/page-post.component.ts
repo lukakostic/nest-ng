@@ -48,8 +48,8 @@ export class PagePostComponent implements OnInit{
 
   ngOnInit(): void {
     this.postId = this.route.snapshot.queryParamMap.get('id');
-      console.log("POST ID (params)",this.postId);
-      //this.loadFullPost();
+    console.log("POST ID (params)",this.postId);
+    //this.loadFullPost();
     
     if(this.postId==null||this.postId==""){
       let url = window.location.pathname;

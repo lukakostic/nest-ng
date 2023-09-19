@@ -54,14 +54,23 @@ export class UserController {
     if(!usr) return {token:null,user:null};
     return {token:r.token,user: usr};
   }
+  @UseGuards(JwtAuthGuard)
+  @Post("deleteProfile")
+  async deleteProfile(@Body() r: UserReq<{}>): Promise<boolean>|null {
+    let usr = await this.usersServices.loginToken(r.token);
+    if(usr==null) return null;
+    this.usersServices.loginTokens[r.token] = undefined;
+    return await this.usersServices.deleteUser(usr.id);
+  }
 
   @Post("register")
   async register(@Body() user: Partial<User>): Promise<{user:User,token:string}|null> {
-    //check if username contains any special characters
+    //special chars
     if(user.username.match(/[^a-zA-Z0-9]/)) return null;
     if(user.username.length<4 || user.password.length<3) return null;
-    
+    if(!user.email.match(/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/)) return null;
     console.log("registering",user);
+    
     if(await this.usersServices.getUserExists(user as any)) return null; //check taken
     user.timestamp = Date.now();
     let pw = user.password;

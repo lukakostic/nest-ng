@@ -23,7 +23,7 @@ export class FeedComponent implements OnInit {
   other: any[] = [];
   constructor(private store: Store<State>,
     private authService: UserService
-    ) {}
+  ) {}
 
   reqPosts(){
     let authState = this.authService.getAuthState();

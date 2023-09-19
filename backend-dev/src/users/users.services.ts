@@ -60,8 +60,8 @@ export class UserServices {
       (await User.findOne({where: {email: obj.email}}))!==null
     );
   }
-  async deleteUser(userId: string): Promise<void> {
-    await User.delete({id: userId});
+  async deleteUser(userId: string) {
+    return (await User.delete({id: userId}))?.affected>0;
   }
 
   async followUser(user1Id: string, user2Id): Promise<Following|null> {

@@ -27,9 +27,7 @@ export class LoginComponent {
   constructor(
     private authService: UserService,
     private store: Store<State>)
-     {
-      
-    }
+  {}
 
   onLogin() {
     this.store.dispatch(UserActions.loginRequest({username:this.username,password:this.password,redirect:true}));

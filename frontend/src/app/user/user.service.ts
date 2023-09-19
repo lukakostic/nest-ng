@@ -35,25 +35,8 @@ export class UserService {
     });
     return this.http.get(this.apiUrl + path,{headers:reqHeader});
   }
-  
 
-  /*
-  login(username: string, password: string) {
-    return this.http.post(this.apiUrl + '/login', { username, password }).pipe(
-      tap((response: any) => {
-        console.log("LOGIN RESPONSE",response);
-        //localStorage.setItem('token', response.access_token);
-      })
-    );
-  }
-  register(user:UserRegData) {
-    return this.http.post(this.apiUrl + '/register', user).pipe(
-      tap((response: any) => {
-        console.log("REGISTER RESPONSE",response);
-        //localStorage.setItem('token', response.access_token);
-      })
-    );
-  }*/
+
 
   private getLoginToken() {
     return localStorage.getItem('token');
@@ -77,18 +60,7 @@ export class UserService {
   getUserById(id: string){// : Observable<User> {
     return this.reqPost('/userById',{id:id});
   }
-  /*
-  private loginAll(obj:{ username?:string, password?:string, token?:string }){
-    if(obj.token){
-      console.log("Logging in by token ",obj.token);
-      return this.loginByToken();
-    }else if(obj.username && obj.password){
-      console.log("Logging in by user and pass ",obj.username,obj.password);
-      return this.login2(obj);
-    }
-    throw new Error("Invalid loginAll");
-  }
-  */
+  
   loginByToken(){// Observable<User>|null {
     return this.reqPost('/loginByToken',{});
   } 
@@ -139,5 +111,8 @@ export class UserService {
   /////////////// profile
   editMyDescription(desc:string){
     return this.reqPost('/editMyDescription',{desc});
+  }
+  deleteProfile(){
+    return this.reqPost('/deleteProfile',{});
   }
 }

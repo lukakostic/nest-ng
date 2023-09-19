@@ -6,7 +6,7 @@ export class Upvote  extends BaseEntity{
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
-  @ManyToOne(() => User, { nullable: false })
+  @ManyToOne(() => User, { nullable: false, onDelete: 'CASCADE', cascade: true  })
   @JoinColumn()
   public user!: User;
 

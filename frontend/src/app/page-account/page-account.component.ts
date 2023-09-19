@@ -39,18 +39,24 @@ export class PageAccountComponent implements OnInit{
   //posts: Post[] = [];
 
   posts$: Observable<Post[]> = this.store.select(state=> ((state as any)['feed']).posts[this.userId!] );
-  
-   
 
-   loggedIn: boolean = false;
-   loggedInAccount : User|null = null;
-   loggedInUser$: Observable<User|null> = this.store.select(state=> {
-     this.loggedInAccount = ((state as any)['auth']).loggedInUser;
-     this.loggedIn= !!(this.loggedInAccount);
-     return this.loggedInAccount;
-   });
+  loggedIn: boolean = false;
+  loggedInAccount : User|null = null;
+  loggedInUser$: Observable<User|null> = this.store.select(state=> {
+    this.loggedInAccount = ((state as any)['auth']).loggedInUser;
+    this.loggedIn= !!(this.loggedInAccount);
+    return this.loggedInAccount;
+  });
 
-   followUser(){
+
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private authService: UserService,
+    private store: Store<State>
+  ) {}
+
+  followUser(){
     this.isFollowing=true;
 
     this.authService.follow(this.userId!).subscribe((response: any) => {
@@ -58,62 +64,55 @@ export class PageAccountComponent implements OnInit{
         if(this.following!=null){
           this.isFollowing = true;
         }else this.isFollowing = false;
-      }
-    );
-   }
-   unfollowUser(){
+        this.getUserData();
+    });
+  }
+  unfollowUser(){
     this.isFollowing=false;
     this.authService.unfollow(this.userId!).subscribe((response: any) => {
         if(response!=null) this.following = null;
         if(response==true) this.isFollowing = false;
+        this.getUserData();
       }
     );
-   }
+  }
 
-  constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private authService: UserService,
-    private store: Store<State>
-    ) {}
-
-    getUserData(){
-      this.userId = this.route.snapshot.queryParamMap.get('id');
-      if(this.userId == null || this.userId==""){
-        this.router.navigate(['/login']);
-        //   this.userId = this.authService.getLoginToken();
-      }
-      
-       console.log("loading user id ",this.userId);
-      this.store.dispatch(PostActions.loadPosts({id:this.userId}));
-
-      this.authService.allFollowing(this.userId!).subscribe((response: any) => {
-        this.followingUsers = response;
-      });
-      this.authService.allFollowers(this.userId!).subscribe((response: any) => {
-        this.followerUsers = response;
-      });
-      
-      this.authService.userAndFollowing(this.userId!).subscribe((response: any) => {
-          console.log("ACCOUNT PAGE ",response);
-          this.user = response.user;
-          this.following = response.following;
-          if(this.following!=null){
-            this.isFollowing = true;
-          }else this.isFollowing = false;
-          this.userLoaded.emit(this.user!);
-          //localStorage.setItem('token', response.access_token);
-        }
-      );
+  getUserData(){
+    this.userId = this.route.snapshot.queryParamMap.get('id');
+    if(this.userId == null || this.userId==""){
+      this.router.navigate(['/login']);
+      //   this.userId = this.authService.getLoginToken();
     }
+    
+      console.log("loading user id ",this.userId);
+    this.store.dispatch(PostActions.loadPosts({id:this.userId}));
+
+    this.authService.allFollowing(this.userId!).subscribe((response: any) => {
+      this.followingUsers = response;
+    });
+    this.authService.allFollowers(this.userId!).subscribe((response: any) => {
+      this.followerUsers = response;
+    });
+    
+    this.authService.userAndFollowing(this.userId!).subscribe((response: any) => {
+        console.log("ACCOUNT PAGE ",response);
+        this.user = response.user;
+        this.following = response.following;
+        if(this.following!=null){
+          this.isFollowing = true;
+        }else this.isFollowing = false;
+        this.userLoaded.emit(this.user!);
+        //localStorage.setItem('token', response.access_token);
+      }
+    );
+  }
+
   ngOnInit(): void {
    
     this.getUserData();
     this.router.events.subscribe((event: Event) => {
       /*
-      if (event instanceof NavigationStart) {
-        // Show loading indicator
-      }
+      if (event instanceof NavigationStart)
       */
 
       if (event instanceof NavigationEnd) {
@@ -123,20 +122,15 @@ export class PageAccountComponent implements OnInit{
         this.getUserData();
       }
       /*
-      if (event instanceof NavigationError) {
-          // Hide loading indicator
-
-          // Present error to user
-          console.log(event.error);
-      }
+      if (event instanceof NavigationError)
       */
     })
   }
-userDate(){
-  //turn user.timestamp (number) to date string
-  if(this.user==null) return "";
-  return new Date(parseInt(this.user?.timestamp as any)).toLocaleDateString();
-}
+  userDate(){
+    //turn user.timestamp (number) to date string
+    if(this.user==null) return "";
+    return new Date(parseInt(this.user?.timestamp as any)).toLocaleDateString();
+  }
   loginBypass(){
     console.log("login bypass")
     this.store.dispatch(UserActions.loginRequest({username:this.user!.username,password:"123",redirect:true}));
@@ -147,6 +141,14 @@ userDate(){
   }
   getUrl(){
     alert(this.user!.id);
+  }
+  delete(){
+    if(confirm("Are you sure you want to delete your account? This action cannot be undone.") == false) return;
+    this.authService.deleteProfile().subscribe((response: any) => {
+        //this.user = response;
+        this.authService.logout();
+        this.router.navigate(['/']);
+    });
   }
   saveEdit(){
     this.authService.editMyDescription(this.editUser?.description).subscribe((response: any) => {

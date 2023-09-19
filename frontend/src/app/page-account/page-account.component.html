@@ -13,6 +13,9 @@
         <button mat-menu-item (click)="getUrl()" >
             <mat-icon>share</mat-icon> <span>Get share url</span>
         </button>
+        <button *ngIf="user?.id == loggedInAccount?.id" mat-menu-item (click)="delete()" >
+            <mat-icon>delete</mat-icon> <span>Delete profile</span>
+        </button>
         <hr style="color: lightgray; margin: 5px;">
         <button mat-menu-item (click)="loginBypass()" >
             <mat-icon>login</mat-icon> <span>LoginBypass</span>

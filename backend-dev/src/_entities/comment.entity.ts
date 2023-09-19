@@ -6,7 +6,7 @@ export class CommentM  extends BaseEntity{
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
-  @ManyToOne(() => User, { nullable: false })
+  @ManyToOne(() => User, u=>u.comments, { nullable: false, onDelete: 'CASCADE', cascade: true  })
   public user!: User;
 
   @Column({type: 'bigint'})
